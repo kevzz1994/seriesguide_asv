@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        versionCode 4
+        versionName "0.6.1"
+    }
+}
+
+dependencies {
+    implementation "com.android.support:support-annotations:${versions.supportLibrary}"
+}
