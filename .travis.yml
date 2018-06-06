@@ -65,4 +65,4 @@ before_script:
 #
 #script:
 #  - ./gradlew dependencies || true
-  - ./gradlew connectedCheck--stacktrace
+  - ./gradlew connectedCheck --stacktrace
