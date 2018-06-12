@@ -44,6 +44,7 @@ buildscript {
         classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.3' // SeriesGuide
         classpath 'io.fabric.tools:gradle:1.25.2' // SeriesGuide
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.10.0' // api
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
     }
 }
 
