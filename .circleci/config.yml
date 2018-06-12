@@ -25,7 +25,7 @@ jobs:
 #          command: ./gradlew test
       - run:
           name: SonarQube
-          command: ./gradlew sonarqube -Dsonar.organization=kevzz1994-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ec81936651c35a3e0faba35cc2e32ac92de0ff88
+          command: ./gradlew sonarqube -Dsonar.login=ec81936651c35a3e0faba35cc2e32ac92de0ff88 -Dsonar.organization=kevzz1994-github -Dsonar.host.url=https://sonarcloud.io
       - store_artifacts:
           path: app/build/reports
           destination: reports
