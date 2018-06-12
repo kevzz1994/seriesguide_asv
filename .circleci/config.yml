@@ -6,10 +6,11 @@ jobs:
       - image: circleci/android:api-25-alpha
     environment:
       JVM_OPTS: -Xmx3200m
+      ANDROID_HOME: /usr/local/android-sdk-linux
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
          name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
          command: sudo chmod +x ./gradlew
@@ -19,7 +20,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
           command: ./gradlew lint test
