@@ -188,7 +188,17 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
                 return ERROR_FILE_ACCESS;
             }
             // ...and the file actually exists
-            ParcelFileDescriptor pfd;
+            ParcelFileDescriptor pfd = new ParcelFileDescriptor(null);
+
+//            try (ParcelFileDescriptor pfd2 =
+//                         context.getContentResolver().openFileDescriptor(backupFileUri, "r")) {
+//
+//
+//
+//            } catch (IOException ignored) {
+//
+//            }
+
             try {
                 pfd = context.getContentResolver().openFileDescriptor(backupFileUri, "r");
             } catch (FileNotFoundException | SecurityException e) {
@@ -209,12 +219,18 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
                 importFromJson(type, in);
 
                 // let the document provider know we're done.
-                pfd.close();
+                //pfd.close();
             } catch (JsonParseException | IOException | IllegalStateException e) {
                 // the given Json might not be valid or unreadable
                 Timber.e(e, "JSON import failed");
                 errorCause = e.getMessage();
                 return ERROR;
+            } finally {
+                try {
+                    pfd.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             // make sure we can access the backup file
