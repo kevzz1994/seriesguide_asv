@@ -339,7 +339,7 @@ public class ExtensionsConfigurationFragment extends Fragment
 
             if (touchPoint.x > listView.getWidth() / 2) {
                 float scale = touchPoint.x - listView.getWidth() / 2;
-                scale /= ((float) listView.getWidth() / 5);
+                scale /= ((float) listView.getWidth() / (float) 5);
                 ViewGroup.LayoutParams lp = floatView.getLayoutParams();
                 lp.height = Math.max(floatViewHeight, (int) (scale * floatViewHeight));
                 floatView.setLayoutParams(lp);
