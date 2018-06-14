@@ -13,6 +13,7 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+
 import com.battlelancer.seriesguide.R;
 import com.battlelancer.seriesguide.dataliberation.model.Episode;
 import com.battlelancer.seriesguide.dataliberation.model.List;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonWriter;
 import com.uwetrottmann.androidutils.AndroidUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,7 +46,9 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
 import org.greenrobot.eventbus.EventBus;
+
 import timber.log.Timber;
 
 /**
@@ -95,13 +99,16 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
         String EPISODE = "episode";
     }
 
-    @SuppressLint("StaticFieldLeak") private Context context;
+    @SuppressLint("StaticFieldLeak")
+    private Context context;
     private OnTaskProgressListener progressListener;
     private boolean isFullDump;
     private boolean isAutoBackupMode;
-    @Nullable private final Integer type;
+    @Nullable
+    private final Integer type;
     private boolean isUseDefaultFolders;
-    @Nullable private String errorCause;
+    @Nullable
+    private String errorCause;
 
     public static File getExportPath(boolean isAutoBackupMode) {
         return new File(
@@ -112,12 +119,12 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     /**
      * Same as {@link JsonExportTask} but allows to set parameters.
      *
-     * @param isFullDump Whether to also export meta-data like descriptions, ratings, actors, etc.
-     * Increases file size about 2-4 times.
+     * @param isFullDump       Whether to also export meta-data like descriptions, ratings, actors, etc.
+     *                         Increases file size about 2-4 times.
      * @param isAutoBackupMode Whether to run an auto backup, also shows no result toasts.
      */
     public JsonExportTask(Context context, OnTaskProgressListener progressListener,
-            boolean isFullDump, boolean isAutoBackupMode, @Nullable Integer type) {
+                          boolean isFullDump, boolean isAutoBackupMode, @Nullable Integer type) {
         this.context = context.getApplicationContext();
         this.progressListener = progressListener;
         this.isFullDump = isFullDump;
@@ -251,23 +258,22 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                     return ERROR_FILE_ACCESS;
                 }
 
-                ParcelFileDescriptor pfd = context.getContentResolver()
-                        .openFileDescriptor(backupFileUri, "w");
-                if (pfd == null) {
-                    return ERROR_FILE_ACCESS;
-                }
-                FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
+                try (ParcelFileDescriptor pfd = context.getContentResolver()
+                        .openFileDescriptor(backupFileUri, "w")) {
+                    if (pfd == null) {
+                        return ERROR_FILE_ACCESS;
+                    }
 
-                if (type == BACKUP_SHOWS) {
-                    writeJsonStreamShows(out, data);
-                } else if (type == BACKUP_LISTS) {
-                    writeJsonStreamLists(out, data);
-                } else if (type == BACKUP_MOVIES) {
-                    writeJsonStreamMovies(out, data);
-                }
+                    FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
 
-                // let the document provider know we're done.
-                pfd.close();
+                    if (type == BACKUP_SHOWS) {
+                        writeJsonStreamShows(out, data);
+                    } else if (type == BACKUP_LISTS) {
+                        writeJsonStreamLists(out, data);
+                    } else if (type == BACKUP_MOVIES) {
+                        writeJsonStreamMovies(out, data);
+                    }
+                }
             } else {
                 File backupFile;
                 if (type == BACKUP_SHOWS) {
@@ -427,7 +433,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
         show.seasons = new ArrayList<>();
         final Cursor seasonsCursor = context.getContentResolver().query(
                 Seasons.buildSeasonsOfShowUri(String.valueOf(show.tvdb_id)),
-                new String[] {
+                new String[]{
                         Seasons._ID,
                         Seasons.COMBINED
                 }, null, null, null
@@ -525,7 +531,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
         final Cursor listItems = context.getContentResolver().query(
                 ListItems.CONTENT_URI, ListItemsQuery.PROJECTION,
                 ListItemsQuery.SELECTION,
-                new String[] {
+                new String[]{
                         list.listId
                 }, null
         );
@@ -593,7 +599,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     public interface ShowsQuery {
-        String[] PROJECTION = new String[] {
+        String[] PROJECTION = new String[]{
                 Shows._ID,
                 Shows.TITLE,
                 Shows.FAVORITE,
@@ -616,7 +622,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Shows.RATING_USER,
                 Shows.LANGUAGE
         };
-        String[] PROJECTION_FULL = new String[] {
+        String[] PROJECTION_FULL = new String[]{
                 Shows._ID,
                 Shows.TITLE,
                 Shows.FAVORITE,
@@ -677,7 +683,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     public interface EpisodesQuery {
-        String[] PROJECTION = new String[] {
+        String[] PROJECTION = new String[]{
                 Episodes._ID,
                 Episodes.NUMBER,
                 Episodes.ABSOLUTE_NUMBER,
@@ -689,7 +695,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Episodes.DVDNUMBER,
                 Episodes.RATING_USER
         };
-        String[] PROJECTION_FULL = new String[] {
+        String[] PROJECTION_FULL = new String[]{
                 Episodes._ID,
                 Episodes.NUMBER,
                 Episodes.ABSOLUTE_NUMBER,
@@ -735,7 +741,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     public interface ListsQuery {
-        String[] PROJECTION = new String[] {
+        String[] PROJECTION = new String[]{
                 SeriesGuideContract.Lists.LIST_ID,
                 SeriesGuideContract.Lists.NAME,
                 SeriesGuideContract.Lists.ORDER
@@ -747,7 +753,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     public interface ListItemsQuery {
-        String[] PROJECTION = new String[] {
+        String[] PROJECTION = new String[]{
                 ListItems.LIST_ITEM_ID, SeriesGuideContract.Lists.LIST_ID, ListItems.ITEM_REF_ID,
                 ListItems.TYPE
         };
@@ -761,7 +767,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     public interface MoviesQuery {
-        String[] PROJECTION = new String[] {
+        String[] PROJECTION = new String[]{
                 Movies._ID,
                 Movies.TMDB_ID,
                 Movies.IMDB_ID,

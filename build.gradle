@@ -2,7 +2,7 @@
 buildscript {
     ext.kotlin_version = '1.2.30'
     ext.versions = [
-            'minSdk': 15,
+            'minSdk': 19,
             'compileSdk': 27,
             'targetSdk': 27,
             'buildTools': '27.0.1',
@@ -27,7 +27,7 @@ buildscript {
             'threetenABP': '1.0.6', // github.com/UweTrottmann/ThreeTenABP/blob/master/CHANGELOG.md
 
             // version 15xxxyy -> min SDK 15, release xxx, build yy
-            'code': 1503007,
+            'code': 1903007,
             'name': '42.2',
     ]
 
