@@ -264,14 +264,14 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                         return ERROR_FILE_ACCESS;
                     }
 
-                    FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor());
-
-                    if (type == BACKUP_SHOWS) {
-                        writeJsonStreamShows(out, data);
-                    } else if (type == BACKUP_LISTS) {
-                        writeJsonStreamLists(out, data);
-                    } else if (type == BACKUP_MOVIES) {
-                        writeJsonStreamMovies(out, data);
+                    try (FileOutputStream out = new FileOutputStream(pfd.getFileDescriptor())) {
+                        if (type == BACKUP_SHOWS) {
+                            writeJsonStreamShows(out, data);
+                        } else if (type == BACKUP_LISTS) {
+                            writeJsonStreamLists(out, data);
+                        } else if (type == BACKUP_MOVIES) {
+                            writeJsonStreamMovies(out, data);
+                        }
                     }
                 }
             } else {
