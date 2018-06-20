@@ -58,13 +58,14 @@ before_script:
 #  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
 #  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
   - chmod +x gradlew
-##  - echo no | android create avd --force -n test -t "android-"$EMULATOR_API_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
-##  - emulator -avd test -no-window &
-##  - android-wait-for-emulator
-##  - adb shell input keyevent 82 &
+  - echo no | android create avd --force -n test -t "android-"$EMULATOR_API_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
+  - emulator -avd test -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 #
 script:
 #  - ./gradlew dependencies || true
 #  - ./gradlew connectedCheck --stacktrace
    - ./gradlew androidDependencies
-   - ./gradlew sonarqube -Dsonar.projectVersion=1.17 -Dsonar.login=ec81936651c35a3e0faba35cc2e32ac92de0ff88 -Dsonar.organization=kevzz1994-github -Dsonar.host.url=https://sonarcloud.io
+   - ./gradlew connectedAndroidTest
+#   - ./gradlew sonarqube -Dsonar.projectVersion=1.17 -Dsonar.login=ec81936651c35a3e0faba35cc2e32ac92de0ff88 -Dsonar.organization=kevzz1994-github -Dsonar.host.url=https://sonarcloud.io
