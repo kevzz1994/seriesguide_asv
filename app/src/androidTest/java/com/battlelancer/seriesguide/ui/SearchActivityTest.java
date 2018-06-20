@@ -43,8 +43,6 @@ public class SearchActivityTest {
             e.printStackTrace();
         }
 
-        pressBack();
-
         ViewInteraction linearLayout = onView(
                 allOf(childAtPosition(
                         childAtPosition(
