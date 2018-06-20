@@ -74,6 +74,24 @@ public class SeasonsFragment extends ListFragment {
     private VectorDrawableCompat drawableWatchAll;
     private VectorDrawableCompat drawableCollectAll;
 
+    protected static final String[] PROJECTION = {
+            BaseColumns._ID,
+            Seasons.COMBINED,
+            Seasons.WATCHCOUNT,
+            Seasons.UNAIREDCOUNT,
+            Seasons.NOAIRDATECOUNT,
+            Seasons.TOTALCOUNT,
+            Seasons.TAGS
+    };
+
+    public static final int _ID = 0;
+    public static final int COMBINED = 1;
+    public static final int WATCHCOUNT = 2;
+    public static final int UNAIREDCOUNT = 3;
+    public static final int NOAIRDATECOUNT = 4;
+    public static final int TOTALCOUNT = 5;
+    public static final int TAGS = 6;
+
     /**
      * All values have to be integer.
      */
@@ -207,7 +225,7 @@ public class SeasonsFragment extends ListFragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(BaseNavDrawerActivity.ServiceCompletedEvent event) {
-        if (event.flagJob == null || !event.isSuccessful) {
+        if (event.flagJob == null || !event.isSuccessful()) {
             return; // no changes applied
         }
         if (!isAdded()) {
@@ -399,27 +417,6 @@ public class SeasonsFragment extends ListFragment {
         }
     };
 
-    public interface SeasonsQuery {
-
-        String[] PROJECTION = {
-                BaseColumns._ID,
-                Seasons.COMBINED,
-                Seasons.WATCHCOUNT,
-                Seasons.UNAIREDCOUNT,
-                Seasons.NOAIRDATECOUNT,
-                Seasons.TOTALCOUNT,
-                Seasons.TAGS
-        };
-
-        int _ID = 0;
-        int COMBINED = 1;
-        int WATCHCOUNT = 2;
-        int UNAIREDCOUNT = 3;
-        int NOAIRDATECOUNT = 4;
-        int TOTALCOUNT = 5;
-        int TAGS = 6;
-    }
-
     private LoaderManager.LoaderCallbacks<Cursor> seasonsLoaderCallbacks
             = new LoaderManager.LoaderCallbacks<Cursor>() {
         @Override
@@ -428,7 +425,7 @@ public class SeasonsFragment extends ListFragment {
             // can use SELECTION_WITH_EPISODES as count is updated when this fragment runs
             return new CursorLoader(getActivity(),
                     Seasons.buildSeasonsOfShowUri(String.valueOf(getShowId())),
-                    SeasonsQuery.PROJECTION, Seasons.SELECTION_WITH_EPISODES, null, sortOrder
+                    PROJECTION, Seasons.SELECTION_WITH_EPISODES, null, sortOrder
                     .query()
             );
         }

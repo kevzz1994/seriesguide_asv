@@ -180,9 +180,9 @@ class EpisodesAdapter extends CursorAdapter {
         }
     }
 
-    interface EpisodesQuery {
+    static class EpisodesQuery {
 
-        String[] PROJECTION = new String[] {
+        static String[] PROJECTION = new String[] {
                 SeriesGuideDatabase.Tables.EPISODES + "." + Episodes._ID, // 0
                 Episodes.WATCHED,
                 Episodes.TITLE,
@@ -194,14 +194,14 @@ class EpisodesAdapter extends CursorAdapter {
                 Episodes.COLLECTED // 8
         };
 
-        int _ID = 0;
-        int WATCHED = 1;
-        int TITLE = 2;
-        int NUMBER = 3;
-        int SEASON = 4;
-        int FIRSTAIREDMS = 5;
-        int DVDNUMBER = 6;
-        int ABSOLUTE_NUMBER = 7;
-        int COLLECTED = 8;
+        static int _ID = 0;
+        static int WATCHED = 1;
+        static int TITLE = 2;
+        static int NUMBER = 3;
+        static int SEASON = 4;
+        static int FIRSTAIREDMS = 5;
+        static int DVDNUMBER = 6;
+        static int ABSOLUTE_NUMBER = 7;
+        static int COLLECTED = 8;
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
 import com.battlelancer.seriesguide.R;
 import com.battlelancer.seriesguide.provider.SeriesGuideContract.Episodes;
 import com.battlelancer.seriesguide.provider.SeriesGuideContract.Shows;
@@ -26,8 +27,10 @@ import com.battlelancer.seriesguide.ui.episodes.EpisodeTools;
 import com.battlelancer.seriesguide.util.ServiceUtils;
 import com.battlelancer.seriesguide.util.TextTools;
 import com.battlelancer.seriesguide.util.TimeTools;
+
 import java.io.IOException;
 import java.util.Date;
+
 import timber.log.Timber;
 
 public class ListWidgetService extends RemoteViewsService {
@@ -45,6 +48,21 @@ public class ListWidgetService extends RemoteViewsService {
         private Cursor dataCursor;
         private int widgetType;
         private boolean isLightTheme;
+
+        private String[] PROJECTION = {
+                Qualified.SHOWS_ID, Shows.TITLE, Shows.NETWORK, Shows.POSTER, Shows.STATUS,
+                Shows.NEXTEPISODE, Episodes.TITLE, Episodes.NUMBER, Episodes.SEASON,
+                Episodes.FIRSTAIREDMS
+        };
+
+        private int SHOW_TITLE = 1;
+        private int SHOW_NETWORK = 2;
+        private int SHOW_POSTER = 3;
+        private int SHOW_NEXT_EPISODE_ID = 5;
+        private int EPISODE_TITLE = 6;
+        private int EPISODE_NUMBER = 7;
+        private int EPISODE_SEASON = 8;
+        private int EPISODE_FIRSTAIRED_MS = 9;
 
         public ListRemoteViewsFactory(Context context, Intent intent) {
             this.context = context;
@@ -94,7 +112,7 @@ public class ListWidgetService extends RemoteViewsService {
                     // query, sort based on user preference
                     newCursor = getContentResolver().query(
                             Shows.CONTENT_URI_WITH_NEXT_EPISODE,
-                            ShowsQuery.PROJECTION,
+                            PROJECTION,
                             selection.toString(),
                             null,
                             ShowsDistillationSettings.getSortQuery(
@@ -167,18 +185,18 @@ public class ListWidgetService extends RemoteViewsService {
             Bundle extras = new Bundle();
             extras.putInt(EpisodesActivity.InitBundle.EPISODE_TVDBID,
                     dataCursor.getInt(isShowQuery ?
-                            ShowsQuery.SHOW_NEXT_EPISODE_ID : CalendarQuery._ID));
+                            SHOW_NEXT_EPISODE_ID : CalendarQuery._ID));
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
             rv.setOnClickFillInIntent(R.id.appwidget_row, fillInIntent);
 
             // episode description
             int seasonNumber = dataCursor.getInt(isShowQuery ?
-                    ShowsQuery.EPISODE_SEASON : CalendarQuery.SEASON);
+                    EPISODE_SEASON : CalendarQuery.SEASON);
             int episodeNumber = dataCursor.getInt(isShowQuery ?
-                    ShowsQuery.EPISODE_NUMBER : CalendarQuery.NUMBER);
+                    EPISODE_NUMBER : CalendarQuery.NUMBER);
             String title = dataCursor.getString(isShowQuery ?
-                    ShowsQuery.EPISODE_TITLE : CalendarQuery.TITLE);
+                    EPISODE_TITLE : CalendarQuery.TITLE);
             boolean hideTitle = DisplaySettings.preventSpoilers(context);
             if (!isShowQuery) {
                 int episodeFlag = dataCursor.getInt(CalendarQuery.WATCHED);
@@ -191,7 +209,7 @@ public class ListWidgetService extends RemoteViewsService {
             // relative release time
             Date actualRelease = TimeTools.applyUserOffset(context,
                     dataCursor.getLong(isShowQuery ?
-                            ShowsQuery.EPISODE_FIRSTAIRED_MS
+                            EPISODE_FIRSTAIRED_MS
                             : CalendarQuery.RELEASE_TIME_MS));
             // "Fri Oct 31" or "Fri 2 days ago"
             boolean displayExactDate = DisplaySettings.isDisplayExactDate(context);
@@ -203,16 +221,16 @@ public class ListWidgetService extends RemoteViewsService {
             // absolute release time and network (if any)
             String absoluteTime = TimeTools.formatToLocalTime(context, actualRelease);
             String network = dataCursor.getString(isShowQuery ?
-                    ShowsQuery.SHOW_NETWORK : CalendarQuery.SHOW_NETWORK);
+                    SHOW_NETWORK : CalendarQuery.SHOW_NETWORK);
             rv.setTextViewText(R.id.widgetNetwork, TextTools.dotSeparate(network, absoluteTime));
 
             // show name
             rv.setTextViewText(R.id.textViewWidgetShow, dataCursor.getString(isShowQuery ?
-                    ShowsQuery.SHOW_TITLE : CalendarQuery.SHOW_TITLE));
+                    SHOW_TITLE : CalendarQuery.SHOW_TITLE));
 
             // show poster
             String posterPath = dataCursor.getString(isShowQuery
-                    ? ShowsQuery.SHOW_POSTER : CalendarQuery.SHOW_POSTER_PATH);
+                    ? SHOW_POSTER : CalendarQuery.SHOW_POSTER_PATH);
             maybeSetPoster(rv, posterPath);
 
             // Return the remote views object.
@@ -276,33 +294,5 @@ public class ListWidgetService extends RemoteViewsService {
             // need to worry about locking up the widget.
             onQueryForData();
         }
-    }
-
-    interface ShowsQuery {
-        String[] PROJECTION = {
-                Qualified.SHOWS_ID, Shows.TITLE, Shows.NETWORK, Shows.POSTER, Shows.STATUS,
-                Shows.NEXTEPISODE, Episodes.TITLE, Episodes.NUMBER, Episodes.SEASON,
-                Episodes.FIRSTAIREDMS
-        };
-
-        int SHOW_ID = 0;
-
-        int SHOW_TITLE = 1;
-
-        int SHOW_NETWORK = 2;
-
-        int SHOW_POSTER = 3;
-
-        int SHOW_STATUS = 4;
-
-        int SHOW_NEXT_EPISODE_ID = 5;
-
-        int EPISODE_TITLE = 6;
-
-        int EPISODE_NUMBER = 7;
-
-        int EPISODE_SEASON = 8;
-
-        int EPISODE_FIRSTAIRED_MS = 9;
     }
 }

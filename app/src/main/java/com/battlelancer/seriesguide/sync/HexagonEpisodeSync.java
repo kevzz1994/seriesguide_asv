@@ -395,8 +395,8 @@ public class HexagonEpisodeSync {
         return true;
     }
 
-    private interface FlaggedEpisodesQuery {
-        String[] PROJECTION = new String[] {
+    private static class FlaggedEpisodesQuery {
+        static String[] PROJECTION = new String[] {
                 SeriesGuideContract.Episodes._ID,
                 SeriesGuideContract.Episodes.SEASON,
                 SeriesGuideContract.Episodes.NUMBER,
@@ -404,13 +404,13 @@ public class HexagonEpisodeSync {
                 SeriesGuideContract.Episodes.COLLECTED
         };
 
-        String SELECTION = SeriesGuideContract.Episodes.WATCHED + "!=" + EpisodeFlags.UNWATCHED
+        static String SELECTION = SeriesGuideContract.Episodes.WATCHED + "!=" + EpisodeFlags.UNWATCHED
                 + " OR " + SeriesGuideContract.Episodes.COLLECTED + "=1";
 
-        int SEASON = 1;
-        int NUMBER = 2;
-        int WATCHED = 3;
-        int IN_COLLECTION = 4;
+        static int SEASON = 1;
+        static int NUMBER = 2;
+        static int WATCHED = 3;
+        static int IN_COLLECTION = 4;
     }
 
 }

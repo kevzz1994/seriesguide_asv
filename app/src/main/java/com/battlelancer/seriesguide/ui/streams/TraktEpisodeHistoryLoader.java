@@ -20,11 +20,27 @@ import retrofit2.Response;
 class TraktEpisodeHistoryLoader extends GenericSimpleLoader<TraktEpisodeHistoryLoader.Result> {
 
     static class Result {
-        public List<HistoryEntry> results;
-        public String emptyText;
+        private List<HistoryEntry> results;
+        private String emptyText;
 
         public Result(List<HistoryEntry> results, String emptyText) {
             this.results = results;
+            this.emptyText = emptyText;
+        }
+
+        public List<HistoryEntry> getResults() {
+            return results;
+        }
+
+        public void setResults(List<HistoryEntry> results) {
+            this.results = results;
+        }
+
+        public String getEmptyText() {
+            return emptyText;
+        }
+
+        public void setEmptyText(String emptyText) {
             this.emptyText = emptyText;
         }
     }

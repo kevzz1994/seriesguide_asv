@@ -199,24 +199,24 @@ public class EpisodeDetailsActivity extends BaseNavDrawerActivity {
     };
 
     private void populateBasicInfo(@Nullable SeasonsLoader.Result basicInfo) {
-        if (basicInfo == null || basicInfo.seasonsOfShow.isEmpty()) {
+        if (basicInfo == null || basicInfo.getSeasonsOfShow().isEmpty()) {
             // do not have minimal data, give up.
             finish();
             return;
         }
 
-        showTvdbId = basicInfo.showTvdbId;
-        showTitle = basicInfo.showTitle;
+        showTvdbId = basicInfo.getShowTvdbId();
+        showTitle = basicInfo.getShowTitle();
 
         // set show poster as background
-        TvdbImageTools.loadShowPosterAlpha(this, imageViewBackground, basicInfo.showPoster);
+        TvdbImageTools.loadShowPosterAlpha(this, imageViewBackground, basicInfo.getShowPoster());
 
         // set up season switcher
-        spinnerAdapter = new SeasonSpinnerAdapter(this, basicInfo.seasonsOfShow);
+        spinnerAdapter = new SeasonSpinnerAdapter(this, basicInfo.getSeasonsOfShow());
         toolbarSpinner.setAdapter(spinnerAdapter);
         //  display the season of the given episode
-        Season initialSeason = basicInfo.seasonsOfShow.get(basicInfo.seasonIndexOfEpisode);
-        toolbarSpinner.setSelection(basicInfo.seasonIndexOfEpisode, false);
+        Season initialSeason = basicInfo.getSeasonsOfShow().get(basicInfo.getSeasonIndexOfEpisode());
+        toolbarSpinner.setSelection(basicInfo.getSeasonIndexOfEpisode(), false);
         loadSeason(initialSeason);
 
         // start listening to spinner selection changes
@@ -252,7 +252,7 @@ public class EpisodeDetailsActivity extends BaseNavDrawerActivity {
 
         // update the activity title for accessibility
         setTitle(getString(R.string.episodes) + " " + showTitle + " "
-                + SeasonTools.getSeasonString(this, season.season));
+                + SeasonTools.getSeasonString(this, season.getSeason()));
 
         getSupportLoaderManager().restartLoader(LOADER_SEASON_ID, null, seasonLoaderCallbacks);
     }
@@ -284,7 +284,7 @@ public class EpisodeDetailsActivity extends BaseNavDrawerActivity {
         viewPager.setAdapter(episodePagerAdapter);
         tabs.setViewPager(viewPager);
 
-        viewPager.setCurrentItem(data.requestedEpisodeIndex, false);
+        viewPager.setCurrentItem(data.getRequestedEpisodeIndex(), false);
     }
 
     @Override
@@ -342,7 +342,7 @@ public class EpisodeDetailsActivity extends BaseNavDrawerActivity {
             }
 
             Season item = getItem(position);
-            view.setText(SeasonTools.getSeasonString(context, item.season));
+            view.setText(SeasonTools.getSeasonString(context, item.getSeason()));
 
             return view;
         }

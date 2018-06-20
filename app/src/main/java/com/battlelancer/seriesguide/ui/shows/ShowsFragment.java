@@ -540,7 +540,7 @@ public class ShowsFragment extends Fragment implements
         // keep unwatched and upcoming shows from becoming stale
         schedulePeriodicDataRefresh(true);
 
-        return new CursorLoader(getActivity(), Shows.CONTENT_URI, ShowsAdapter.Query.PROJECTION,
+        return new CursorLoader(getActivity(), Shows.CONTENT_URI, ShowsAdapter.PROJECTION,
                 selection.toString(), null,
                 ShowsDistillationSettings.getSortQuery(sortOrderId, isSortFavoritesFirst,
                         isSortIgnoreArticles)
@@ -607,15 +607,15 @@ public class ShowsFragment extends Fragment implements
             // show/hide some menu items depending on show properties
             Menu menu = popupMenu.getMenu();
             menu.findItem(R.id.menu_action_shows_favorites_add)
-                    .setVisible(!viewHolder.isFavorited);
+                    .setVisible(!viewHolder.isFavorited());
             menu.findItem(R.id.menu_action_shows_favorites_remove)
-                    .setVisible(viewHolder.isFavorited);
-            menu.findItem(R.id.menu_action_shows_hide).setVisible(!viewHolder.isHidden);
-            menu.findItem(R.id.menu_action_shows_unhide).setVisible(viewHolder.isHidden);
+                    .setVisible(viewHolder.isFavorited());
+            menu.findItem(R.id.menu_action_shows_hide).setVisible(!viewHolder.isHidden());
+            menu.findItem(R.id.menu_action_shows_unhide).setVisible(viewHolder.isHidden());
 
             popupMenu.setOnMenuItemClickListener(
                     new ShowMenuItemClickListener(getContext(), getFragmentManager(),
-                            viewHolder.showTvdbId, viewHolder.episodeTvdbId, TAG));
+                            viewHolder.getShowTvdbId(), viewHolder.getEpisodeTvdbId(), TAG));
             popupMenu.show();
         }
 

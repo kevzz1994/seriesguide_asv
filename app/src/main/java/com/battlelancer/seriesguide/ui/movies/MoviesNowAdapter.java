@@ -26,7 +26,7 @@ class MoviesNowAdapter extends NowAdapter {
             HistoryViewHolder holder = (HistoryViewHolder) viewHolder;
 
             String time = TimeTools.formatToLocalRelativeTime(getContext(),
-                    new Date(item.timestamp));
+                    new Date(item.getTimestamp()));
             if (item.type == ItemType.HISTORY) {
                 // user history entry
                 holder.avatar.setVisibility(View.GONE);
@@ -34,23 +34,23 @@ class MoviesNowAdapter extends NowAdapter {
             } else {
                 // friend history entry
                 holder.avatar.setVisibility(View.VISIBLE);
-                holder.info.setText(TextTools.dotSeparate(item.username, time));
+                holder.info.setText(TextTools.dotSeparate(item.getUsername(), time));
 
                 // trakt avatar
-                ServiceUtils.loadWithPicasso(getContext(), item.avatar).into(holder.avatar);
+                ServiceUtils.loadWithPicasso(getContext(), item.getAvatar()).into(holder.avatar);
             }
 
             // TMDb poster (resolved on demand as trakt does not have them)
             TvdbImageTools.loadShowPosterResizeSmallCrop(getContext(), holder.poster,
-                    "movietmdb://" + item.movieTmdbId);
+                    "movietmdb://" + item.getMovieTmdbId());
 
-            holder.show.setText(item.title);
+            holder.show.setText(item.getTitle());
 
             // action type indicator (only if showing trakt history)
-            if (TRAKT_ACTION_WATCH.equals(item.action)) {
+            if (TRAKT_ACTION_WATCH.equals(item.getAction())) {
                 holder.type.setImageDrawable(getDrawableWatched());
                 holder.type.setVisibility(View.VISIBLE);
-            } else if (item.action != null) {
+            } else if (item.getAction() != null) {
                 // check-in, scrobble
                 holder.type.setImageDrawable(getDrawableCheckin());
                 holder.type.setVisibility(View.VISIBLE);

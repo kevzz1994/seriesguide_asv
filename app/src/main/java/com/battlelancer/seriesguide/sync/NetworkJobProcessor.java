@@ -232,8 +232,9 @@ public class NetworkJobProcessor {
     }
 
     public static class JobResult {
-        public boolean successful;
-        public boolean jobRemovable;
+        private boolean successful;
+        private boolean jobRemovable;
+
         @Nullable public String action;
         @Nullable public String error;
         @Nullable public String item;
@@ -241,6 +242,22 @@ public class NetworkJobProcessor {
 
         public JobResult(boolean successful, boolean jobRemovable) {
             this.successful = successful;
+            this.jobRemovable = jobRemovable;
+        }
+
+        public boolean isSuccessful() {
+            return successful;
+        }
+
+        public void setSuccessful(boolean successful) {
+            this.successful = successful;
+        }
+
+        public boolean isJobRemovable() {
+            return jobRemovable;
+        }
+
+        public void setJobRemovable(boolean jobRemovable) {
             this.jobRemovable = jobRemovable;
         }
     }

@@ -231,8 +231,8 @@ public class TraktAddFragment extends AddFragment {
             if (!isAdded()) {
                 return;
             }
-            setSearchResults(data.results);
-            setEmptyMessage(data.emptyText);
+            setSearchResults(data.getResults());
+            setEmptyMessage(data.getEmptyText());
             setProgressVisible(false, true);
         }
 

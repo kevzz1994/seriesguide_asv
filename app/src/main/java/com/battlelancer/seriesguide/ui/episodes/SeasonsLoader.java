@@ -18,12 +18,12 @@ class SeasonsLoader extends GenericSimpleLoader<SeasonsLoader.Result> {
     private final int episodeTvdbId;
 
     static class Result {
-        public int showTvdbId;
-        public String showTitle;
-        public String showPoster;
-        public int seasonIndexOfEpisode;
+        private int showTvdbId;
+        private String showTitle;
+        private String showPoster;
+        private int seasonIndexOfEpisode;
         @NonNull
-        public List<Season> seasonsOfShow;
+        private List<Season> seasonsOfShow;
 
         public Result(int showTvdbId, String showTitle, String showPoster,
                 int seasonIndexOfEpisode, @NonNull List<Season> seasonsOfShow) {
@@ -31,6 +31,47 @@ class SeasonsLoader extends GenericSimpleLoader<SeasonsLoader.Result> {
             this.showTitle = showTitle;
             this.showPoster = showPoster;
             this.seasonIndexOfEpisode = seasonIndexOfEpisode;
+            this.seasonsOfShow = seasonsOfShow;
+        }
+
+        public int getShowTvdbId() {
+            return showTvdbId;
+        }
+
+        public void setShowTvdbId(int showTvdbId) {
+            this.showTvdbId = showTvdbId;
+        }
+
+        public String getShowTitle() {
+            return showTitle;
+        }
+
+        public void setShowTitle(String showTitle) {
+            this.showTitle = showTitle;
+        }
+
+        public String getShowPoster() {
+            return showPoster;
+        }
+
+        public void setShowPoster(String showPoster) {
+            this.showPoster = showPoster;
+        }
+
+        public int getSeasonIndexOfEpisode() {
+            return seasonIndexOfEpisode;
+        }
+
+        public void setSeasonIndexOfEpisode(int seasonIndexOfEpisode) {
+            this.seasonIndexOfEpisode = seasonIndexOfEpisode;
+        }
+
+        @NonNull
+        public List<Season> getSeasonsOfShow() {
+            return seasonsOfShow;
+        }
+
+        public void setSeasonsOfShow(@NonNull List<Season> seasonsOfShow) {
             this.seasonsOfShow = seasonsOfShow;
         }
     }
@@ -75,7 +116,7 @@ class SeasonsLoader extends GenericSimpleLoader<SeasonsLoader.Result> {
         while (seasonsQuery.moveToNext()) {
             Season season = new Season();
             season.tvdbId = seasonsQuery.getInt(SeasonsQuery.ID);
-            season.season = seasonsQuery.getInt(SeasonsQuery.NUMBER);
+            season.setSeason(seasonsQuery.getInt(SeasonsQuery.NUMBER));
             seasons.add(season);
 
             if (season.tvdbId == seasonTvdbId) {
@@ -88,25 +129,25 @@ class SeasonsLoader extends GenericSimpleLoader<SeasonsLoader.Result> {
         return new Result(showTvdbId, showTitle, showPoster, seasonIndexOfEpisode, seasons);
     }
 
-    interface EpisodeQuery {
-        String[] PROJECTION = new String[] {
+    static class EpisodeQuery {
+        static String[] PROJECTION = new String[] {
                 SeriesGuideContract.Shows.REF_SHOW_ID,
                 SeriesGuideContract.Shows.TITLE,
                 SeriesGuideContract.Shows.POSTER,
                 SeriesGuideContract.Seasons.REF_SEASON_ID,
         };
-        int SHOW_TVDB_ID = 0;
-        int SHOW_TITLE = 1;
-        int SHOW_POSTER = 2;
-        int SEASON_TVDB_ID = 3;
+        static int SHOW_TVDB_ID = 0;
+        static int SHOW_TITLE = 1;
+        static int SHOW_POSTER = 2;
+        static int SEASON_TVDB_ID = 3;
     }
 
-    interface SeasonsQuery {
-        String[] PROJECTION = new String[] {
+    static class SeasonsQuery {
+        static String[] PROJECTION = new String[] {
                 SeriesGuideContract.Seasons._ID,
                 SeriesGuideContract.Seasons.COMBINED
         };
-        int ID = 0;
-        int NUMBER = 1;
+        static int ID = 0;
+        static int NUMBER = 1;
     }
 }

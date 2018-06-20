@@ -12,9 +12,33 @@ public class Season {
     @SerializedName("tvdb_id")
     public int tvdbId;
 
-    public int season;
+    private int season;
 
-    public List<Episode> episodes;
+    private List<Episode> episodes;
+
+    public int getTvdbId() {
+        return tvdbId;
+    }
+
+    public void setTvdbId(int tvdbId) {
+        this.tvdbId = tvdbId;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
+    }
 
     public ContentValues toContentValues(int showTvdbId) {
         ContentValues values = new ContentValues();

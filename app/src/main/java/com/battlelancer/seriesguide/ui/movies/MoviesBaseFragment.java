@@ -179,7 +179,7 @@ public abstract class MoviesBaseFragment extends Fragment implements
 
         MoviesCursorAdapter.ViewHolder viewHolder
                 = (MoviesCursorAdapter.ViewHolder) view.getTag();
-        Utils.startActivityWithAnimation(getActivity(), i, viewHolder.poster);
+        Utils.startActivityWithAnimation(getActivity(), i, viewHolder.getPoster());
     }
 
     @Override

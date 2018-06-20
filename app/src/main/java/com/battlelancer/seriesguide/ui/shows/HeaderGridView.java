@@ -46,12 +46,44 @@ public class HeaderGridView extends GridView {
      */
     private static class FixedViewInfo {
         /** The view to add to the grid */
-        public View view;
-        public ViewGroup viewContainer;
+        private View view;
+        private ViewGroup viewContainer;
         /** The data backing the view. This is returned from {@link ListAdapter#getItem(int)}. */
-        public Object data;
+        private Object data;
         /** <code>true</code> if the fixed view should be selectable in the grid */
-        public boolean isSelectable;
+        private boolean isSelectable;
+
+        public View getView() {
+            return view;
+        }
+
+        public void setView(View view) {
+            this.view = view;
+        }
+
+        public ViewGroup getViewContainer() {
+            return viewContainer;
+        }
+
+        public void setViewContainer(ViewGroup viewContainer) {
+            this.viewContainer = viewContainer;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public void setData(Object data) {
+            this.data = data;
+        }
+
+        public boolean isSelectable() {
+            return isSelectable;
+        }
+
+        public void setSelectable(boolean selectable) {
+            isSelectable = selectable;
+        }
     }
 
     private ArrayList<FixedViewInfo> headerViewInfos = new ArrayList<>();

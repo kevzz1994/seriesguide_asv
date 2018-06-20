@@ -46,9 +46,17 @@ import timber.log.Timber;
 public class MovieTools {
 
     public static class MovieChangedEvent {
-        public int movieTmdbId;
+        private int movieTmdbId;
 
         public MovieChangedEvent(int movieTmdbId) {
+            this.movieTmdbId = movieTmdbId;
+        }
+
+        public int getMovieTmdbId() {
+            return movieTmdbId;
+        }
+
+        public void setMovieTmdbId(int movieTmdbId) {
             this.movieTmdbId = movieTmdbId;
         }
     }

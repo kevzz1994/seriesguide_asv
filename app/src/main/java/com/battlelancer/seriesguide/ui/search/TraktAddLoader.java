@@ -31,8 +31,8 @@ import retrofit2.Response;
 public class TraktAddLoader extends GenericSimpleLoader<TraktAddLoader.Result> {
 
     public static class Result {
-        public List<SearchResult> results;
-        public String emptyText;
+        private List<SearchResult> results;
+        private String emptyText;
 
         public Result(List<SearchResult> results, String emptyText) {
             this.results = results;
@@ -42,6 +42,22 @@ public class TraktAddLoader extends GenericSimpleLoader<TraktAddLoader.Result> {
         public Result(List<SearchResult> results, Context context, @StringRes int emptyTextResId) {
             this.results = results;
             this.emptyText = context.getString(emptyTextResId);
+        }
+
+        public List<SearchResult> getResults() {
+            return results;
+        }
+
+        public void setResults(List<SearchResult> results) {
+            this.results = results;
+        }
+
+        public String getEmptyText() {
+            return emptyText;
+        }
+
+        public void setEmptyText(String emptyText) {
+            this.emptyText = emptyText;
         }
     }
 

@@ -32,14 +32,14 @@ class ListItemsAdapter extends BaseShowsAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ListItemViewHolder viewHolder = (ListItemViewHolder) view.getTag();
 
-        viewHolder.showTvdbId = cursor.getInt(Query.SHOW_ID);
-        viewHolder.isFavorited = cursor.getInt(Query.SHOW_FAVORITE) == 1;
+        viewHolder.setShowTvdbId(cursor.getInt(Query.SHOW_ID));
+        viewHolder.setFavorited(cursor.getInt(Query.SHOW_FAVORITE) == 1);
 
         // show title
-        viewHolder.name.setText(cursor.getString(Query.SHOW_TITLE));
+        viewHolder.getName().setText(cursor.getString(Query.SHOW_TITLE));
 
         // favorite label
-        setFavoriteState(viewHolder.favorited, viewHolder.isFavorited);
+        setFavoriteState(viewHolder.getFavorited(), viewHolder.isFavorited());
 
         // item title
         final int itemType = cursor.getInt(Query.ITEM_TYPE);
@@ -62,18 +62,18 @@ class ListItemsAdapter extends BaseShowsAdapter {
                 }
 
                 // network, regular day and time
-                viewHolder.timeAndNetwork.setText(
+                viewHolder.getTimeAndNetwork().setText(
                         TextTools.networkAndTime(context, releaseTimeShow, weekDay, network));
 
                 // next episode info
                 String fieldValue = cursor.getString(Query.SHOW_NEXTTEXT);
                 if (TextUtils.isEmpty(fieldValue)) {
                     // display show status if there is no next episode
-                    viewHolder.episodeTime.setText(ShowTools.getStatus(context,
+                    viewHolder.getEpisodeTime().setText(ShowTools.getStatus(context,
                             cursor.getInt(Query.SHOW_STATUS)));
-                    viewHolder.episode.setText(null);
+                    viewHolder.getEpisode().setText(null);
                 } else {
-                    viewHolder.episode.setText(fieldValue);
+                    viewHolder.getEpisode().setText(fieldValue);
 
                     Date releaseTimeEpisode = TimeTools.applyUserOffset(context,
                             cursor.getLong(Query.SHOW_NEXT_DATE_MS));
@@ -83,31 +83,31 @@ class ListItemsAdapter extends BaseShowsAdapter {
                             : TimeTools.formatToLocalRelativeTime(context, releaseTimeEpisode);
                     if (TimeTools.isSameWeekDay(releaseTimeEpisode, releaseTimeShow, weekDay)) {
                         // just display date
-                        viewHolder.episodeTime.setText(dateTime);
+                        viewHolder.getEpisodeTime().setText(dateTime);
                     } else {
                         // display date and explicitly day
-                        viewHolder.episodeTime.setText(
+                        viewHolder.getEpisodeTime().setText(
                                 context.getString(R.string.format_date_and_day, dateTime,
                                         TimeTools.formatToLocalDay(releaseTimeEpisode)));
                     }
                 }
 
                 // remaining count
-                setRemainingCount(viewHolder.remainingCount,
+                setRemainingCount(viewHolder.getRemainingCount(),
                         cursor.getInt(Query.SHOW_UNWATCHED_COUNT));
                 break;
             case 2:
                 // seasons
-                viewHolder.timeAndNetwork.setText(R.string.season);
-                viewHolder.episode.setText(SeasonTools.getSeasonString(context,
+                viewHolder.getTimeAndNetwork().setText(R.string.season);
+                viewHolder.getEpisode().setText(SeasonTools.getSeasonString(context,
                         cursor.getInt(Query.ITEM_TITLE)));
-                viewHolder.episodeTime.setText(null);
-                viewHolder.remainingCount.setVisibility(View.GONE);
+                viewHolder.getEpisodeTime().setText(null);
+                viewHolder.getRemainingCount().setVisibility(View.GONE);
                 break;
             case 3:
                 // episodes
-                viewHolder.timeAndNetwork.setText(R.string.episode);
-                viewHolder.episode.setText(TextTools.getNextEpisodeString(context,
+                viewHolder.getTimeAndNetwork().setText(R.string.episode);
+                viewHolder.getEpisode().setText(TextTools.getNextEpisodeString(context,
                         cursor.getInt(Query.SHOW_NEXTTEXT),
                         cursor.getInt(Query.SHOW_NEXTEPISODE_OR_EPISODE_NUMBER),
                         cursor.getString(Query.ITEM_TITLE)));
@@ -115,17 +115,17 @@ class ListItemsAdapter extends BaseShowsAdapter {
                 if (releaseTime != -1) {
                     // "in 15 mins (Fri)"
                     Date actualRelease = TimeTools.applyUserOffset(context, releaseTime);
-                    viewHolder.episodeTime.setText(context.getString(
+                    viewHolder.getEpisodeTime().setText(context.getString(
                             R.string.format_date_and_day,
                             TimeTools.formatToLocalRelativeTime(context, actualRelease),
                             TimeTools.formatToLocalDay(actualRelease)));
                 }
-                viewHolder.remainingCount.setVisibility(View.GONE);
+                viewHolder.getRemainingCount().setVisibility(View.GONE);
                 break;
         }
 
         // poster
-        TvdbImageTools.loadShowPosterResizeCrop(context, viewHolder.poster,
+        TvdbImageTools.loadShowPosterResizeCrop(context, viewHolder.getPoster(),
                 cursor.getString(Query.SHOW_POSTER));
 
         // context menu
@@ -146,18 +146,42 @@ class ListItemsAdapter extends BaseShowsAdapter {
 
     public static class ListItemViewHolder extends ShowViewHolder {
 
-        public String itemId;
-        public int itemTvdbId;
-        public int itemType;
+        private String itemId;
+        private int itemTvdbId;
+        private int itemType;
 
         public ListItemViewHolder(View v, OnItemClickListener onItemClickListener) {
             super(v, onItemClickListener);
         }
+
+        public String getItemId() {
+            return itemId;
+        }
+
+        public void setItemId(String itemId) {
+            this.itemId = itemId;
+        }
+
+        public int getItemTvdbId() {
+            return itemTvdbId;
+        }
+
+        public void setItemTvdbId(int itemTvdbId) {
+            this.itemTvdbId = itemTvdbId;
+        }
+
+        public int getItemType() {
+            return itemType;
+        }
+
+        public void setItemType(int itemType) {
+            this.itemType = itemType;
+        }
     }
 
-    public interface Query {
+    public static class Query {
 
-        String[] PROJECTION = new String[] {
+        static String[] PROJECTION = new String[] {
                 ListItems._ID, // 0
                 ListItems.LIST_ITEM_ID,
                 ListItems.ITEM_REF_ID,
@@ -179,23 +203,23 @@ class ListItemsAdapter extends BaseShowsAdapter {
                 Shows.UNWATCHED_COUNT // 18
         };
 
-        int LIST_ITEM_ID = 1;
-        int ITEM_REF_ID = 2;
-        int ITEM_TYPE = 3;
-        int SHOW_ID = 4;
-        int SHOW_TITLE = 5;
-        int ITEM_TITLE = 6;
-        int SHOW_POSTER = 7;
-        int SHOW_NETWORK = 8;
-        int SHOW_OR_EPISODE_RELEASE_TIME = 9;
-        int SHOW_RELEASE_WEEKDAY = 10;
-        int SHOW_RELEASE_TIMEZONE = 11;
-        int SHOW_RELEASE_COUNTRY = 12;
-        int SHOW_STATUS = 13;
-        int SHOW_NEXTTEXT = 14;
-        int SHOW_NEXTEPISODE_OR_EPISODE_NUMBER = 15;
-        int SHOW_NEXT_DATE_MS = 16;
-        int SHOW_FAVORITE = 17;
-        int SHOW_UNWATCHED_COUNT = 18;
+        static int LIST_ITEM_ID = 1;
+        static int ITEM_REF_ID = 2;
+        static int ITEM_TYPE = 3;
+        static int SHOW_ID = 4;
+        static int SHOW_TITLE = 5;
+        static int ITEM_TITLE = 6;
+        static int SHOW_POSTER = 7;
+        static int SHOW_NETWORK = 8;
+        static int SHOW_OR_EPISODE_RELEASE_TIME = 9;
+        static int SHOW_RELEASE_WEEKDAY = 10;
+        static int SHOW_RELEASE_TIMEZONE = 11;
+        static int SHOW_RELEASE_COUNTRY = 12;
+        static int SHOW_STATUS = 13;
+        static int SHOW_NEXTTEXT = 14;
+        static int SHOW_NEXTEPISODE_OR_EPISODE_NUMBER = 15;
+        static int SHOW_NEXT_DATE_MS = 16;
+        static int SHOW_FAVORITE = 17;
+        static int SHOW_UNWATCHED_COUNT = 18;
     }
 }

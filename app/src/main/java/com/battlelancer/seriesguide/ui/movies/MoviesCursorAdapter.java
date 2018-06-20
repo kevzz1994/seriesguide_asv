@@ -109,21 +109,53 @@ class MoviesCursorAdapter extends CursorAdapter {
     }
 
     public static class ViewHolder {
-        public TextView title;
-        public TextView releaseDate;
-        public ImageView poster;
-        public View contextMenu;
+        private TextView title;
+        private TextView releaseDate;
+        private ImageView poster;
+        private View contextMenu;
+
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
+
+        public TextView getReleaseDate() {
+            return releaseDate;
+        }
+
+        public void setReleaseDate(TextView releaseDate) {
+            this.releaseDate = releaseDate;
+        }
+
+        public ImageView getPoster() {
+            return poster;
+        }
+
+        public void setPoster(ImageView poster) {
+            this.poster = poster;
+        }
+
+        public View getContextMenu() {
+            return contextMenu;
+        }
+
+        public void setContextMenu(View contextMenu) {
+            this.contextMenu = contextMenu;
+        }
     }
 
-    public interface MoviesQuery {
+    static class MoviesQuery {
 
-        String[] PROJECTION = { Movies._ID, Movies.TMDB_ID, Movies.TITLE, Movies.POSTER,
+        static String[] PROJECTION = { Movies._ID, Movies.TMDB_ID, Movies.TITLE, Movies.POSTER,
                 Movies.RELEASED_UTC_MS };
 
         int ID = 0;
-        int TMDB_ID = 1;
-        int TITLE = 2;
-        int POSTER = 3;
-        int RELEASED_UTC_MS = 4;
+        static int TMDB_ID = 1;
+        static int TITLE = 2;
+        static int POSTER = 3;
+        static int RELEASED_UTC_MS = 4;
     }
 }

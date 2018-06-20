@@ -218,7 +218,15 @@ abstract class SectionedHistoryAdapter extends ArrayAdapter<HistoryEntry> implem
 
     static class HeaderViewHolder {
 
-        public TextView day;
+        private TextView day;
+
+        public TextView getDay() {
+            return day;
+        }
+
+        public void setDay(TextView day) {
+            this.day = day;
+        }
     }
 
     public static class ViewHolder {

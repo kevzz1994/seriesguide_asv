@@ -29,11 +29,27 @@ import timber.log.Timber;
 public class TraktCommentsLoader extends GenericSimpleLoader<TraktCommentsLoader.Result> {
 
     public static class Result {
-        public List<Comment> results;
-        public String emptyText;
+        private List<Comment> results;
+        private String emptyText;
 
         public Result(List<Comment> results, String emptyText) {
             this.results = results;
+            this.emptyText = emptyText;
+        }
+
+        public List<Comment> getResults() {
+            return results;
+        }
+
+        public void setResults(List<Comment> results) {
+            this.results = results;
+        }
+
+        public String getEmptyText() {
+            return emptyText;
+        }
+
+        public void setEmptyText(String emptyText) {
             this.emptyText = emptyText;
         }
     }

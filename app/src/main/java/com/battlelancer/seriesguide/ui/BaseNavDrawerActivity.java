@@ -86,7 +86,7 @@ public abstract class BaseNavDrawerActivity extends BaseActivity {
     public static class ServiceCompletedEvent {
 
         @Nullable public final String confirmationText;
-        public boolean isSuccessful;
+        private boolean isSuccessful;
         @Nullable public final FlagJob flagJob;
 
         public ServiceCompletedEvent(@Nullable String confirmationText, boolean isSuccessful,
@@ -94,6 +94,14 @@ public abstract class BaseNavDrawerActivity extends BaseActivity {
             this.confirmationText = confirmationText;
             this.isSuccessful = isSuccessful;
             this.flagJob = flagJob;
+        }
+
+        public boolean isSuccessful() {
+            return isSuccessful;
+        }
+
+        public void setSuccessful(boolean successful) {
+            isSuccessful = successful;
         }
     }
 

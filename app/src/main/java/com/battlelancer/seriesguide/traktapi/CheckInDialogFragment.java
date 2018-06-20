@@ -47,19 +47,19 @@ public class CheckInDialogFragment extends GenericCheckInDialogFragment {
         return f;
     }
 
-    private interface CheckInQuery {
+    private static class CheckInQuery {
 
-        String[] PROJECTION = new String[] {
+        static String[] PROJECTION = new String[] {
                 Episodes.SEASON,
                 Episodes.NUMBER,
                 Episodes.TITLE,
                 Shows.TITLE
         };
 
-        int SEASON = 0;
-        int NUMBER = 1;
-        int EPISODE_TITLE = 2;
-        int SHOW_TITLE = 3;
+        static int SEASON = 0;
+        static int NUMBER = 1;
+        static int EPISODE_TITLE = 2;
+        static int SHOW_TITLE = 3;
     }
 
     @Override

@@ -11,7 +11,11 @@ public enum JobAction {
     MOVIE_WATCHED_SET(7),
     MOVIE_WATCHED_REMOVE(8);
 
-    public int id;
+    public int getId() {
+        return id;
+    }
+
+    private int id;
 
     JobAction(int id) {
         this.id = id;
@@ -19,7 +23,7 @@ public enum JobAction {
 
     public static JobAction fromId(int id) {
         for (JobAction action : JobAction.values()) {
-            if (action.id == id) {
+            if (action.getId() == id) {
                 return action;
             }
         }

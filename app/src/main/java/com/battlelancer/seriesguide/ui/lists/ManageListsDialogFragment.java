@@ -268,18 +268,18 @@ public class ManageListsDialogFragment extends AppCompatDialogFragment implement
         }
     }
 
-    interface ListsQuery {
+    static class ListsQuery {
 
-        String[] PROJECTION = new String[] {
+        static String[] PROJECTION = new String[] {
                 Tables.LISTS + "." + Lists._ID, Tables.LISTS + "." + Lists.LIST_ID, Lists.NAME,
                 ListItems.LIST_ITEM_ID
         };
 
-        int LIST_ID = 1;
+        static int LIST_ID = 1;
 
-        int NAME = 2;
+        static int NAME = 2;
 
-        int LIST_ITEM_ID = 3;
+        static int LIST_ITEM_ID = 3;
     }
 
     /**

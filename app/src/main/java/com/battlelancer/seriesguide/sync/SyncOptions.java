@@ -10,10 +10,14 @@ public class SyncOptions {
         FULL(2),
         JOBS(3);
 
-        public int id;
+        private int id;
 
         SyncType(int id) {
             this.id = id;
+        }
+
+        public int getId() {
+            return id;
         }
 
         public static SyncType from(int id) {

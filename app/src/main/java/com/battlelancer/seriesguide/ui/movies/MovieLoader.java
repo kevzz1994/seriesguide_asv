@@ -96,9 +96,9 @@ class MovieLoader extends GenericSimpleLoader<MovieDetails> {
         context.getContentResolver().update(Movies.buildMovieUri(tmdbId), values, null, null);
     }
 
-    private interface MovieQuery {
+    private static class MovieQuery {
 
-        String[] PROJECTION = {
+        static String[] PROJECTION = {
                 Movies.TITLE, // 0
                 Movies.OVERVIEW,
                 Movies.RELEASED_UTC_MS,
@@ -115,19 +115,19 @@ class MovieLoader extends GenericSimpleLoader<MovieDetails> {
                 Movies.RATING_USER // 13
         };
 
-        int TITLE = 0;
-        int OVERVIEW = 1;
-        int RELEASED_UTC_MS = 2;
-        int POSTER = 3;
-        int WATCHED = 4;
-        int IN_COLLECTION = 5;
-        int IN_WATCHLIST = 6;
-        int IMDB_ID = 7;
-        int RUNTIME_MIN = 8;
-        int RATING_TMDB = 9;
-        int RATING_VOTES_TMDB = 10;
-        int RATING_TRAKT = 11;
-        int RATING_VOTES_TRAKT = 12;
-        int RATING_USER = 13;
+        static int TITLE = 0;
+        static int OVERVIEW = 1;
+        static int RELEASED_UTC_MS = 2;
+        static int POSTER = 3;
+        static int WATCHED = 4;
+        static int IN_COLLECTION = 5;
+        static int IN_WATCHLIST = 6;
+        static int IMDB_ID = 7;
+        static int RUNTIME_MIN = 8;
+        static int RATING_TMDB = 9;
+        static int RATING_VOTES_TMDB = 10;
+        static int RATING_TRAKT = 11;
+        static int RATING_VOTES_TRAKT = 12;
+        static int RATING_USER = 13;
     }
 }

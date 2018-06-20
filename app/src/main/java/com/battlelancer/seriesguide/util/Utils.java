@@ -164,7 +164,9 @@ public class Utils {
         if (files != null) {
             for (File file : files) {
                 //noinspection ResultOfMethodCallIgnored
-                file.delete();
+               if (!file.delete()) {
+                   Timber.w("Could not clear cache, external storage not available");
+               }
             }
         }
     }

@@ -113,8 +113,8 @@ public class ListsReorderDialogFragment extends AppCompatDialogFragment {
         List<String> listIdsInOrder = new ArrayList<>(count);
         for (int position = 0; position < count; position++) {
             OrderedListsLoader.OrderedList list = adapter.getItem(position);
-            if (list != null && !TextUtils.isEmpty(list.id)) {
-                listIdsInOrder.add(list.id);
+            if (list != null && !TextUtils.isEmpty(list.getId())) {
+                listIdsInOrder.add(list.getId());
             }
         }
         ListsTools.reorderLists(getContext(), listIdsInOrder);

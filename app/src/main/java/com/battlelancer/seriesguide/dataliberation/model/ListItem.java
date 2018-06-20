@@ -11,6 +11,13 @@ public class ListItem {
     @SerializedName("tvdb_id")
     public int tvdbId;
 
-    public String type;
+    private String type;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

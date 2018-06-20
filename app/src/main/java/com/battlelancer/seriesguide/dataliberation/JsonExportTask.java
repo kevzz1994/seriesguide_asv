@@ -388,34 +388,34 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
             }
 
             Show show = new Show();
-            show.tvdb_id = shows.getInt(ShowsQuery.ID);
-            show.title = shows.getString(ShowsQuery.TITLE);
-            show.favorite = shows.getInt(ShowsQuery.FAVORITE) == 1;
-            show.notify = shows.getInt(ShowsQuery.NOTIFY) == 1;
-            show.hidden = shows.getInt(ShowsQuery.HIDDEN) == 1;
-            show.language = shows.getString(ShowsQuery.LANGUAGE);
-            show.release_time = shows.getInt(ShowsQuery.RELEASE_TIME);
-            show.release_weekday = shows.getInt(ShowsQuery.RELEASE_WEEKDAY);
-            show.release_timezone = shows.getString(ShowsQuery.RELEASE_TIMEZONE);
-            show.country = shows.getString(ShowsQuery.RELEASE_COUNTRY);
-            show.last_watched_episode = shows.getInt(ShowsQuery.LASTWATCHEDID);
-            show.last_watched_ms = shows.getLong(ShowsQuery.LASTWATCHED_MS);
-            show.poster = shows.getString(ShowsQuery.POSTER);
-            show.content_rating = shows.getString(ShowsQuery.CONTENTRATING);
-            show.status = DataLiberationTools.decodeShowStatus(shows.getInt(ShowsQuery.STATUS));
-            show.runtime = shows.getInt(ShowsQuery.RUNTIME);
-            show.network = shows.getString(ShowsQuery.NETWORK);
-            show.imdb_id = shows.getString(ShowsQuery.IMDBID);
-            show.trakt_id = shows.getInt(ShowsQuery.TRAKT_ID);
-            show.first_aired = shows.getString(ShowsQuery.FIRSTAIRED);
-            show.rating_user = shows.getInt(ShowsQuery.RATING_USER);
+            show.setTvdb_id(shows.getInt(ShowsQuery.ID));
+            show.setTitle(shows.getString(ShowsQuery.TITLE));
+            show.setFavorite(shows.getInt(ShowsQuery.FAVORITE) == 1);
+            show.setNotify(shows.getInt(ShowsQuery.NOTIFY) == 1);
+            show.setHidden(shows.getInt(ShowsQuery.HIDDEN) == 1);
+            show.setLanguage(shows.getString(ShowsQuery.LANGUAGE));
+            show.setRelease_time(shows.getInt(ShowsQuery.RELEASE_TIME));
+            show.setRelease_weekday(shows.getInt(ShowsQuery.RELEASE_WEEKDAY));
+            show.setRelease_timezone(shows.getString(ShowsQuery.RELEASE_TIMEZONE));
+            show.setCountry(shows.getString(ShowsQuery.RELEASE_COUNTRY));
+            show.setLast_watched_episode(shows.getInt(ShowsQuery.LASTWATCHEDID));
+            show.setLast_watched_ms(shows.getLong(ShowsQuery.LASTWATCHED_MS));
+            show.setPoster(shows.getString(ShowsQuery.POSTER));
+            show.setContent_rating(shows.getString(ShowsQuery.CONTENTRATING));
+            show.setStatus(DataLiberationTools.decodeShowStatus(shows.getInt(ShowsQuery.STATUS)));
+            show.setRuntime(shows.getInt(ShowsQuery.RUNTIME));
+            show.setNetwork(shows.getString(ShowsQuery.NETWORK));
+            show.setImdb_id(shows.getString(ShowsQuery.IMDBID));
+            show.setTrakt_id(shows.getInt(ShowsQuery.TRAKT_ID));
+            show.setFirst_aired(shows.getString(ShowsQuery.FIRSTAIRED));
+            show.setRating_user(shows.getInt(ShowsQuery.RATING_USER));
             if (isFullDump) {
-                show.overview = shows.getString(ShowsQuery.OVERVIEW);
-                show.rating = shows.getDouble(ShowsQuery.RATING_GLOBAL);
-                show.rating_votes = shows.getInt(ShowsQuery.RATING_VOTES);
-                show.genres = shows.getString(ShowsQuery.GENRES);
-                show.last_updated = shows.getLong(ShowsQuery.LAST_UPDATED);
-                show.last_edited = shows.getLong(ShowsQuery.LAST_EDITED);
+                show.setOverview(shows.getString(ShowsQuery.OVERVIEW));
+                show.setRating(shows.getDouble(ShowsQuery.RATING_GLOBAL));
+                show.setRating_votes(shows.getInt(ShowsQuery.RATING_VOTES));
+                show.setGenres(shows.getString(ShowsQuery.GENRES));
+                show.setLast_updated(shows.getLong(ShowsQuery.LAST_UPDATED));
+                show.setLast_edited(shows.getLong(ShowsQuery.LAST_EDITED));
             }
 
             addSeasons(show);
@@ -430,9 +430,10 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     private void addSeasons(Show show) {
-        show.seasons = new ArrayList<>();
+        ArrayList<Season> seasonsList = new ArrayList<>();
+        show.setSeasons(seasonsList);
         final Cursor seasonsCursor = context.getContentResolver().query(
-                Seasons.buildSeasonsOfShowUri(String.valueOf(show.tvdb_id)),
+                Seasons.buildSeasonsOfShowUri(String.valueOf(show.getTvdb_id())),
                 new String[]{
                         Seasons._ID,
                         Seasons.COMBINED
@@ -446,18 +447,19 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
         while (seasonsCursor.moveToNext()) {
             Season season = new Season();
             season.tvdbId = seasonsCursor.getInt(0);
-            season.season = seasonsCursor.getInt(1);
+            season.setSeason(seasonsCursor.getInt(1));
 
             addEpisodes(season);
 
-            show.seasons.add(season);
+            show.getSeasons().add(season);
         }
 
         seasonsCursor.close();
     }
 
     private void addEpisodes(Season season) {
-        season.episodes = new ArrayList<>();
+        ArrayList<Episode> episodeList = new ArrayList<>();
+        season.setEpisodes(episodeList);
         final Cursor episodesCursor = context.getContentResolver().query(
                 Episodes.buildEpisodesOfSeasonUri(String.valueOf(season.tvdbId)),
                 isFullDump ? EpisodesQuery.PROJECTION_FULL : EpisodesQuery.PROJECTION, null, null,
@@ -469,30 +471,30 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
 
         while (episodesCursor.moveToNext()) {
             Episode episode = new Episode();
-            episode.tvdbId = episodesCursor.getInt(EpisodesQuery.ID);
-            episode.episode = episodesCursor.getInt(EpisodesQuery.NUMBER);
+            episode.setTvdbId(episodesCursor.getInt(EpisodesQuery.ID));
+            episode.setEpisode(episodesCursor.getInt(EpisodesQuery.NUMBER));
             episode.episodeAbsolute = episodesCursor.getInt(EpisodesQuery.NUMBER_ABSOLUTE);
             episode.episodeDvd = episodesCursor.getDouble(EpisodesQuery.NUMBER_DVD);
             int episodeFlag = episodesCursor.getInt(EpisodesQuery.WATCHED);
-            episode.watched = EpisodeTools.isWatched(episodeFlag);
-            episode.skipped = EpisodeTools.isSkipped(episodeFlag);
-            episode.collected = episodesCursor.getInt(EpisodesQuery.COLLECTED) == 1;
-            episode.title = episodesCursor.getString(EpisodesQuery.TITLE);
+            episode.setWatched(EpisodeTools.isWatched(episodeFlag));
+            episode.setSkipped(EpisodeTools.isSkipped(episodeFlag));
+            episode.setCollected(episodesCursor.getInt(EpisodesQuery.COLLECTED) == 1);
+            episode.setTitle(episodesCursor.getString(EpisodesQuery.TITLE));
             episode.firstAired = episodesCursor.getLong(EpisodesQuery.FIRSTAIRED);
             episode.imdbId = episodesCursor.getString(EpisodesQuery.IMDBID);
-            episode.rating_user = episodesCursor.getInt(EpisodesQuery.RATING_USER);
+            episode.setRating_user(episodesCursor.getInt(EpisodesQuery.RATING_USER));
             if (isFullDump) {
-                episode.overview = episodesCursor.getString(EpisodesQuery.OVERVIEW);
-                episode.image = episodesCursor.getString(EpisodesQuery.IMAGE);
-                episode.writers = episodesCursor.getString(EpisodesQuery.WRITERS);
-                episode.gueststars = episodesCursor.getString(EpisodesQuery.GUESTSTARS);
-                episode.directors = episodesCursor.getString(EpisodesQuery.DIRECTORS);
-                episode.rating = episodesCursor.getDouble(EpisodesQuery.RATING_GLOBAL);
-                episode.rating_votes = episodesCursor.getInt(EpisodesQuery.RATING_VOTES);
+                episode.setOverview(episodesCursor.getString(EpisodesQuery.OVERVIEW));
+                episode.setImage(episodesCursor.getString(EpisodesQuery.IMAGE));
+                episode.setWriters(episodesCursor.getString(EpisodesQuery.WRITERS));
+                episode.setGueststars(episodesCursor.getString(EpisodesQuery.GUESTSTARS));
+                episode.setDirectors(episodesCursor.getString(EpisodesQuery.DIRECTORS));
+                episode.setRating(episodesCursor.getDouble(EpisodesQuery.RATING_GLOBAL));
+                episode.setRating_votes(episodesCursor.getInt(EpisodesQuery.RATING_VOTES));
                 episode.lastEdited = episodesCursor.getLong(EpisodesQuery.LAST_EDITED);
             }
 
-            season.episodes.add(episode);
+            season.getEpisodes().add(episode);
         }
 
         episodesCursor.close();
@@ -513,8 +515,8 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
 
             List list = new List();
             list.listId = lists.getString(ListsQuery.ID);
-            list.name = lists.getString(ListsQuery.NAME);
-            list.order = lists.getInt(ListsQuery.ORDER);
+            list.setName(lists.getString(ListsQuery.NAME));
+            list.setOrder(lists.getInt(ListsQuery.ORDER));
 
             addListItems(list);
 
@@ -539,24 +541,24 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
             return;
         }
 
-        list.items = new ArrayList<>();
+        //list.items = new ArrayList<>();
         while (listItems.moveToNext()) {
             ListItem item = new ListItem();
             item.listItemId = listItems.getString(ListItemsQuery.ID);
             item.tvdbId = listItems.getInt(ListItemsQuery.ITEM_REF_ID);
             switch (listItems.getInt(ListItemsQuery.TYPE)) {
                 case ListItemTypes.SHOW:
-                    item.type = ListItemTypesExport.SHOW;
+                    item.setType( ListItemTypesExport.SHOW);
                     break;
                 case ListItemTypes.SEASON:
-                    item.type = ListItemTypesExport.SEASON;
+                    item.setType(ListItemTypesExport.SEASON);
                     break;
                 case ListItemTypes.EPISODE:
-                    item.type = ListItemTypesExport.EPISODE;
+                    item.setType(ListItemTypesExport.EPISODE);
                     break;
             }
 
-            list.items.add(item);
+            list.getItems().add(item);
         }
 
         listItems.close();
@@ -578,15 +580,15 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
             Movie movie = new Movie();
             movie.tmdbId = movies.getInt(MoviesQuery.TMDB_ID);
             movie.imdbId = movies.getString(MoviesQuery.IMDB_ID);
-            movie.title = movies.getString(MoviesQuery.TITLE);
+            movie.setTitle(movies.getString(MoviesQuery.TITLE));
             movie.releasedUtcMs = movies.getLong(MoviesQuery.RELEASED_UTC_MS);
             movie.runtimeMin = movies.getInt(MoviesQuery.RUNTIME_MIN);
-            movie.poster = movies.getString(MoviesQuery.POSTER);
+            movie.setPoster(movies.getString(MoviesQuery.POSTER));
             movie.inCollection = movies.getInt(MoviesQuery.IN_COLLECTION) == 1;
             movie.inWatchlist = movies.getInt(MoviesQuery.IN_WATCHLIST) == 1;
-            movie.watched = movies.getInt(MoviesQuery.WATCHED) == 1;
+            movie.setWatched(movies.getInt(MoviesQuery.WATCHED) == 1);
             if (isFullDump) {
-                movie.overview = movies.getString(MoviesQuery.OVERVIEW);
+                movie.setOverview(movies.getString(MoviesQuery.OVERVIEW));
             }
 
             gson.toJson(movie, Movie.class, writer);
@@ -598,8 +600,8 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
         writer.close();
     }
 
-    public interface ShowsQuery {
-        String[] PROJECTION = new String[]{
+    public static class ShowsQuery {
+        static String[] PROJECTION = new String[]{
                 Shows._ID,
                 Shows.TITLE,
                 Shows.FAVORITE,
@@ -622,7 +624,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Shows.RATING_USER,
                 Shows.LANGUAGE
         };
-        String[] PROJECTION_FULL = new String[]{
+        static String[] PROJECTION_FULL = new String[]{
                 Shows._ID,
                 Shows.TITLE,
                 Shows.FAVORITE,
@@ -652,38 +654,38 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Shows.LASTEDIT
         };
 
-        int ID = 0;
-        int TITLE = 1;
-        int FAVORITE = 2;
-        int NOTIFY = 3;
-        int HIDDEN = 4;
-        int RELEASE_TIME = 5;
-        int RELEASE_WEEKDAY = 6;
-        int RELEASE_TIMEZONE = 7;
-        int RELEASE_COUNTRY = 8;
-        int LASTWATCHEDID = 9;
-        int LASTWATCHED_MS = 10;
-        int POSTER = 11;
-        int CONTENTRATING = 12;
-        int STATUS = 13;
-        int RUNTIME = 14;
-        int NETWORK = 15;
-        int IMDBID = 16;
-        int TRAKT_ID = 17;
-        int FIRSTAIRED = 18;
-        int RATING_USER = 19;
-        int LANGUAGE = 20;
+        static int ID = 0;
+        static int TITLE = 1;
+        static int FAVORITE = 2;
+        static int NOTIFY = 3;
+        static int HIDDEN = 4;
+        static int RELEASE_TIME = 5;
+        static int RELEASE_WEEKDAY = 6;
+        static int RELEASE_TIMEZONE = 7;
+        static int RELEASE_COUNTRY = 8;
+        static int LASTWATCHEDID = 9;
+        static int LASTWATCHED_MS = 10;
+        static int POSTER = 11;
+        static int CONTENTRATING = 12;
+        static int STATUS = 13;
+        static int RUNTIME = 14;
+        static int NETWORK = 15;
+        static int IMDBID = 16;
+        static int TRAKT_ID = 17;
+        static int FIRSTAIRED = 18;
+        static int RATING_USER = 19;
+        static int LANGUAGE = 20;
         // Full dump only
-        int OVERVIEW = 21;
-        int RATING_GLOBAL = 22;
-        int RATING_VOTES = 23;
-        int GENRES = 24;
-        int LAST_UPDATED = 25;
-        int LAST_EDITED = 26;
+        static int OVERVIEW = 21;
+        static int RATING_GLOBAL = 22;
+        static int RATING_VOTES = 23;
+        static int GENRES = 24;
+        static int LAST_UPDATED = 25;
+        static int LAST_EDITED = 26;
     }
 
-    public interface EpisodesQuery {
-        String[] PROJECTION = new String[]{
+    public static class EpisodesQuery {
+        static String[] PROJECTION = new String[]{
                 Episodes._ID,
                 Episodes.NUMBER,
                 Episodes.ABSOLUTE_NUMBER,
@@ -695,7 +697,7 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Episodes.DVDNUMBER,
                 Episodes.RATING_USER
         };
-        String[] PROJECTION_FULL = new String[]{
+        static String[] PROJECTION_FULL = new String[]{
                 Episodes._ID,
                 Episodes.NUMBER,
                 Episodes.ABSOLUTE_NUMBER,
@@ -717,57 +719,57 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Episodes.LAST_EDITED
         };
 
-        String SORT = Episodes.NUMBER + " ASC";
+        static String SORT = Episodes.NUMBER + " ASC";
 
-        int ID = 0;
-        int NUMBER = 1;
-        int NUMBER_ABSOLUTE = 2;
-        int WATCHED = 3;
-        int COLLECTED = 4;
-        int TITLE = 5;
-        int FIRSTAIRED = 6;
-        int IMDBID = 7;
-        int NUMBER_DVD = 8;
-        int RATING_USER = 9;
+        static int ID = 0;
+        static int NUMBER = 1;
+        static int NUMBER_ABSOLUTE = 2;
+        static int WATCHED = 3;
+        static int COLLECTED = 4;
+        static int TITLE = 5;
+        static int FIRSTAIRED = 6;
+        static int IMDBID = 7;
+        static int NUMBER_DVD = 8;
+        static int RATING_USER = 9;
         // Full dump only
-        int OVERVIEW = 10;
-        int IMAGE = 11;
-        int WRITERS = 12;
-        int GUESTSTARS = 13;
-        int DIRECTORS = 14;
-        int RATING_GLOBAL = 15;
-        int RATING_VOTES = 16;
-        int LAST_EDITED = 17;
+        static int OVERVIEW = 10;
+        static int IMAGE = 11;
+        static int WRITERS = 12;
+        static int GUESTSTARS = 13;
+        static int DIRECTORS = 14;
+        static int RATING_GLOBAL = 15;
+        static int RATING_VOTES = 16;
+        static int LAST_EDITED = 17;
     }
 
-    public interface ListsQuery {
-        String[] PROJECTION = new String[]{
+    public static class ListsQuery {
+        static String[] PROJECTION = new String[]{
                 SeriesGuideContract.Lists.LIST_ID,
                 SeriesGuideContract.Lists.NAME,
                 SeriesGuideContract.Lists.ORDER
         };
 
-        int ID = 0;
-        int NAME = 1;
-        int ORDER = 2;
+        static int ID = 0;
+        static int NAME = 1;
+        static int ORDER = 2;
     }
 
-    public interface ListItemsQuery {
-        String[] PROJECTION = new String[]{
+    public static class ListItemsQuery {
+        static String[] PROJECTION = new String[]{
                 ListItems.LIST_ITEM_ID, SeriesGuideContract.Lists.LIST_ID, ListItems.ITEM_REF_ID,
                 ListItems.TYPE
         };
 
-        String SELECTION = SeriesGuideContract.Lists.LIST_ID + "=?";
+        static String SELECTION = SeriesGuideContract.Lists.LIST_ID + "=?";
 
-        int ID = 0;
-        int LIST_ID = 1;
-        int ITEM_REF_ID = 2;
-        int TYPE = 3;
+        static int ID = 0;
+        static int LIST_ID = 1;
+        static int ITEM_REF_ID = 2;
+        static int TYPE = 3;
     }
 
-    public interface MoviesQuery {
-        String[] PROJECTION = new String[]{
+    public static class MoviesQuery {
+        static String[] PROJECTION = new String[]{
                 Movies._ID,
                 Movies.TMDB_ID,
                 Movies.IMDB_ID,
@@ -781,18 +783,18 @@ public class JsonExportTask extends AsyncTask<Void, Integer, Integer> {
                 Movies.OVERVIEW
         };
 
-        String SORT_ORDER = Movies.TITLE + " COLLATE NOCASE ASC";
+        static String SORT_ORDER = Movies.TITLE + " COLLATE NOCASE ASC";
 
-        int TMDB_ID = 1;
-        int IMDB_ID = 2;
-        int TITLE = 3;
-        int RELEASED_UTC_MS = 4;
-        int RUNTIME_MIN = 5;
-        int POSTER = 6;
-        int IN_COLLECTION = 7;
-        int IN_WATCHLIST = 8;
-        int WATCHED = 9;
+        static int TMDB_ID = 1;
+        static int IMDB_ID = 2;
+        static int TITLE = 3;
+        static int RELEASED_UTC_MS = 4;
+        static int RUNTIME_MIN = 5;
+        static int POSTER = 6;
+        static int IN_COLLECTION = 7;
+        static int IN_WATCHLIST = 8;
+        static int WATCHED = 9;
         // only in FULL dump
-        int OVERVIEW = 10;
+        static int OVERVIEW = 10;
     }
 }

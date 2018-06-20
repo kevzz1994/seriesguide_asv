@@ -100,14 +100,14 @@ public class ExtensionsAdapter extends ArrayAdapter<ExtensionManager.Extension> 
             return convertView;
         }
 
-        viewHolder.description.setText(extension.description);
+        viewHolder.description.setText(extension.getDescription());
 
         // title
-        viewHolder.title.setText(extension.label);
+        viewHolder.title.setText(extension.getLabel());
 
         // icon
-        if (extension.icon != null) {
-            viewHolder.icon.setImageDrawable(extension.icon);
+        if (extension.getIcon() != null) {
+            viewHolder.icon.setImageDrawable(extension.getIcon());
         } else {
             viewHolder.icon.setImageDrawable(iconExtension);
         }
@@ -118,7 +118,7 @@ public class ExtensionsAdapter extends ArrayAdapter<ExtensionManager.Extension> 
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.extension_menu, popupMenu.getMenu());
-                if (extension.settingsActivity == null) {
+                if (extension.getSettingsActivity() == null) {
                     MenuItem item = popupMenu.getMenu()
                             .findItem(R.id.menu_action_extension_settings);
                     item.setVisible(false);
@@ -148,7 +148,7 @@ public class ExtensionsAdapter extends ArrayAdapter<ExtensionManager.Extension> 
                     // launch settings activity
                     if (extension != null) {
                         Utils.tryStartActivity(getContext(), new Intent()
-                                        .setComponent(extension.settingsActivity)
+                                        .setComponent(extension.getSettingsActivity())
                                         .putExtra(SeriesGuideExtension.EXTRA_FROM_SERIESGUIDE_SETTINGS,
                                                 true),
                                 true

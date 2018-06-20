@@ -69,19 +69,123 @@ public abstract class BaseShowsAdapter extends CursorAdapter {
 
     public static class ShowViewHolder {
 
-        public TextView name;
-        public TextView timeAndNetwork;
-        public TextView episode;
-        public TextView episodeTime;
-        public TextView remainingCount;
-        public ImageView poster;
-        public ImageView favorited;
-        public ImageView contextMenu;
+        private TextView name;
+        private TextView timeAndNetwork;
+        private TextView episode;
+        private TextView episodeTime;
+        private TextView remainingCount;
+        private ImageView poster;
+        private ImageView favorited;
+        private ImageView contextMenu;
 
-        public int showTvdbId;
-        public int episodeTvdbId;
-        public boolean isFavorited;
-        public boolean isHidden;
+        private int showTvdbId;
+        private int episodeTvdbId;
+        private boolean isFavorited;
+        private boolean isHidden;
+
+        public TextView getName() {
+            return name;
+        }
+
+        public void setName(TextView name) {
+            this.name = name;
+        }
+
+        public TextView getTimeAndNetwork() {
+            return timeAndNetwork;
+        }
+
+        public void setTimeAndNetwork(TextView timeAndNetwork) {
+            this.timeAndNetwork = timeAndNetwork;
+        }
+
+        public TextView getEpisode() {
+            return episode;
+        }
+
+        public void setEpisode(TextView episode) {
+            this.episode = episode;
+        }
+
+        public TextView getEpisodeTime() {
+            return episodeTime;
+        }
+
+        public void setEpisodeTime(TextView episodeTime) {
+            this.episodeTime = episodeTime;
+        }
+
+        public TextView getRemainingCount() {
+            return remainingCount;
+        }
+
+        public void setRemainingCount(TextView remainingCount) {
+            this.remainingCount = remainingCount;
+        }
+
+        public ImageView getPoster() {
+            return poster;
+        }
+
+        public void setPoster(ImageView poster) {
+            this.poster = poster;
+        }
+
+        public ImageView getFavorited() {
+            return favorited;
+        }
+
+        public void setFavorited(ImageView favorited) {
+            this.favorited = favorited;
+        }
+
+        public ImageView getContextMenu() {
+            return contextMenu;
+        }
+
+        public void setContextMenu(ImageView contextMenu) {
+            this.contextMenu = contextMenu;
+        }
+
+        public int getShowTvdbId() {
+            return showTvdbId;
+        }
+
+        public void setShowTvdbId(int showTvdbId) {
+            this.showTvdbId = showTvdbId;
+        }
+
+        public int getEpisodeTvdbId() {
+            return episodeTvdbId;
+        }
+
+        public void setEpisodeTvdbId(int episodeTvdbId) {
+            this.episodeTvdbId = episodeTvdbId;
+        }
+
+        public boolean isFavorited() {
+            return isFavorited;
+        }
+
+        public void setFavorited(boolean favorited) {
+            isFavorited = favorited;
+        }
+
+        public boolean isHidden() {
+            return isHidden;
+        }
+
+        public void setHidden(boolean hidden) {
+            isHidden = hidden;
+        }
+
+        public OnItemClickListener getClickListener() {
+            return clickListener;
+        }
+
+        public void setClickListener(OnItemClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
 
         private OnItemClickListener clickListener;
 

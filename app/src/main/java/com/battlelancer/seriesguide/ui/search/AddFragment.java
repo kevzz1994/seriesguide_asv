@@ -270,7 +270,7 @@ public abstract class AddFragment extends Fragment {
 
         static class ViewHolder {
 
-            public SearchResult item;
+            private SearchResult item;
 
             @BindView(R.id.textViewAddTitle) public TextView title;
             @BindView(R.id.textViewAddDescription) public TextView description;
@@ -278,8 +278,16 @@ public abstract class AddFragment extends Fragment {
             @BindView(R.id.addIndicatorAddShow) public AddIndicator addIndicator;
             @BindView(R.id.buttonItemAddMore) public ImageView buttonContextMenu;
 
+            public SearchResult getItem() {
+                return item;
+            }
+
+            public void setItem(SearchResult item) {
+                this.item = item;
+            }
+
             public ViewHolder(View view,
-                    final OnItemClickListener onItemClickListener) {
+                              final OnItemClickListener onItemClickListener) {
                 ButterKnife.bind(this, view);
                 view.setOnClickListener(new OnClickListener() {
                     @Override

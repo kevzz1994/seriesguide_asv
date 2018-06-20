@@ -158,7 +158,7 @@ public abstract class GenericCheckInDialogFragment extends AppCompatDialogFragme
         // done with checking in, unlock UI
         setProgressLock(false);
 
-        if (event.wasSuccessful) {
+        if (event.isWasSuccessful()) {
             // all went well, dismiss ourselves
             dismissAllowingStateLoss();
         }
@@ -169,7 +169,7 @@ public abstract class GenericCheckInDialogFragment extends AppCompatDialogFragme
     public void onEvent(TraktTask.TraktCheckInBlockedEvent event) {
         // launch a check-in override dialog
         TraktCancelCheckinDialogFragment newFragment = TraktCancelCheckinDialogFragment
-                .newInstance(event.traktTaskArgs, event.waitMinutes);
+                .newInstance(event.getTraktTaskArgs(), event.getWaitMinutes());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         newFragment.show(ft, "cancel-checkin-dialog");
     }

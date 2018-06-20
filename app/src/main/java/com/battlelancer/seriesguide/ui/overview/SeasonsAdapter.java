@@ -17,7 +17,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.battlelancer.seriesguide.R;
-import com.battlelancer.seriesguide.ui.overview.SeasonsFragment.SeasonsQuery;
 import com.battlelancer.seriesguide.util.SeasonTools;
 import com.uwetrottmann.androidutils.AndroidUtils;
 
@@ -52,17 +51,17 @@ class SeasonsAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         // title
-        final int seasonNumber = mCursor.getInt(SeasonsQuery.COMBINED);
+        final int seasonNumber = mCursor.getInt(SeasonsFragment.COMBINED);
         viewHolder.seasonTitle.setText(
                 SeasonTools.getSeasonString(mContext, seasonNumber));
 
         // unwatched episodes by type
-        final int released = mCursor.getInt(SeasonsQuery.WATCHCOUNT);
-        final int notReleased = mCursor.getInt(SeasonsQuery.UNAIREDCOUNT);
-        final int noReleaseDate = mCursor.getInt(SeasonsQuery.NOAIRDATECOUNT);
+        final int released = mCursor.getInt(SeasonsFragment.WATCHCOUNT);
+        final int notReleased = mCursor.getInt(SeasonsFragment.UNAIREDCOUNT);
+        final int noReleaseDate = mCursor.getInt(SeasonsFragment.NOAIRDATECOUNT);
 
         // progress
-        final int max = mCursor.getInt(SeasonsQuery.TOTALCOUNT);
+        final int max = mCursor.getInt(SeasonsFragment.TOTALCOUNT);
         final int progress = max - released - notReleased - noReleaseDate;
         viewHolder.seasonProgressBar.setMax(max);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -81,7 +80,7 @@ class SeasonsAdapter extends CursorAdapter {
 
         // skipped label
         viewHolder.seasonSkipped
-                .setVisibility(SeasonTools.hasSkippedTag(mCursor.getString(SeasonsQuery.TAGS))
+                .setVisibility(SeasonTools.hasSkippedTag(mCursor.getString(SeasonsFragment.TAGS))
                         ? View.VISIBLE : View.GONE);
 
         // season episodes text
@@ -125,7 +124,7 @@ class SeasonsAdapter extends CursorAdapter {
         viewHolder.seasonWatchCount.setText(countText);
 
         // context menu
-        final int seasonTvdbId = mCursor.getInt(SeasonsQuery._ID);
+        final int seasonTvdbId = mCursor.getInt(SeasonsFragment._ID);
         viewHolder.contextMenu.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

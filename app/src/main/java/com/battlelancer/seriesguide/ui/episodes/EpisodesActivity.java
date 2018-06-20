@@ -178,7 +178,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
     private void setupActionBar(Show show) {
         setupActionBar();
         // setup ActionBar
-        String showTitle = show.title;
+        String showTitle = show.getTitle();
         String seasonString = SeasonTools.getSeasonString(this, seasonNumber);
         setTitle(showTitle + " " + seasonString);
         ActionBar actionBar = getSupportActionBar();
@@ -214,7 +214,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
         if (isDualPane) {
             // set the pager background
             //noinspection ConstantConditions
-            TvdbImageTools.loadShowPosterAlpha(this, backgroundImageView, show.poster);
+            TvdbImageTools.loadShowPosterAlpha(this, backgroundImageView, show.getPoster());
 
             // pager setup
             episodeDetailsAdapter = new EpisodePagerAdapter(this, getSupportFragmentManager(),
@@ -345,12 +345,12 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
         if (episodeCursor != null) {
             while (episodeCursor.moveToNext()) {
                 Episode ep = new Episode();
-                ep.episodeId = episodeCursor.getInt(0);
-                if (ep.episodeId == initialEpisodeId) {
+                ep.setEpisodeId(episodeCursor.getInt(0));
+                if (ep.getEpisodeId() == initialEpisodeId) {
                     startPosition = episodeCursor.getPosition();
                 }
-                ep.episodeNumber = episodeCursor.getInt(1);
-                ep.seasonNumber = seasonNumber;
+                ep.setEpisodeNumber(episodeCursor.getInt(1));
+                ep.setSeasonNumber(seasonNumber);
                 episodeList.add(ep);
             }
 
@@ -393,7 +393,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(BaseNavDrawerActivity.ServiceCompletedEvent event) {
         if (isDualPane
-                && event.isSuccessful && event.flagJob != null
+                && event.isSuccessful() && event.flagJob != null
                 && event.flagJob instanceof BaseEpisodesJob) {
             // order can only change if sorted by unwatched first
             Constants.EpisodeSorting sortOrder = DisplaySettings.getEpisodeSortOrder(this);
@@ -414,7 +414,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
 
         // save currently selected episode
         int oldPosition = episodeDetailsPager.getCurrentItem();
-        int episodeId = episodes.get(oldPosition).episodeId;
+        int episodeId = episodes.get(oldPosition).getEpisodeId();
 
         // reorder and update tabs
         updateEpisodeList();
@@ -428,7 +428,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity {
     private int getPositionForEpisode(int episodeTvdbId) {
         // find page index for this episode
         for (int position = 0; position < episodes.size(); position++) {
-            if (episodes.get(position).episodeId == episodeTvdbId) {
+            if (episodes.get(position).getEpisodeId() == episodeTvdbId) {
                 return position;
             }
         }

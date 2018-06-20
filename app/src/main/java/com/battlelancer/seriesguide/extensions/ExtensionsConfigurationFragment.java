@@ -123,7 +123,7 @@ public class ExtensionsConfigurationFragment extends Fragment
                     .queryAllAvailableExtensions(getContext());
             List<ComponentName> enabledExtensions = new ArrayList<>();
             for (ExtensionManager.Extension extension : extensions) {
-                enabledExtensions.add(extension.componentName);
+                enabledExtensions.add(extension.getComponentName());
             }
             ExtensionManager.get()
                     .setEnabledExtensions(getContext(), enabledExtensions);
@@ -171,8 +171,8 @@ public class ExtensionsConfigurationFragment extends Fragment
             List<ExtensionManager.Extension> disabled = new ArrayList<>();
             Map<ComponentName, ExtensionManager.Extension> enabledByComponent = new HashMap<>();
             for (ExtensionManager.Extension extension : all) {
-                if (enabledNames.contains(extension.componentName)) {
-                    enabledByComponent.put(extension.componentName, extension);
+                if (enabledNames.contains(extension.getComponentName())) {
+                    enabledByComponent.put(extension.getComponentName(), extension);
                 } else {
                     disabled.add(extension);
                 }
@@ -238,7 +238,7 @@ public class ExtensionsConfigurationFragment extends Fragment
         // list of installed, but disabled extensions
         for (int i = 0; i < disabledExtensions.size(); i++) {
             ExtensionManager.Extension extension = disabledExtensions.get(i);
-            menu.add(Menu.NONE, i + 1, Menu.NONE, extension.label);
+            menu.add(Menu.NONE, i + 1, Menu.NONE, extension.getLabel());
         }
         // no third-party extensions supported on Amazon app store for now
         if (!Utils.isAmazonVersion()) {
@@ -256,7 +256,7 @@ public class ExtensionsConfigurationFragment extends Fragment
 
                 // add to enabled extensions
                 ExtensionManager.Extension extension = disabledExtensions.get(item.getItemId() - 1);
-                enabledNames.add(extension.componentName);
+                enabledNames.add(extension.getComponentName());
                 saveExtensions();
                 // scroll to end of list
                 listView.smoothScrollToPosition(adapter.getCount() - 1);
@@ -289,9 +289,9 @@ public class ExtensionsConfigurationFragment extends Fragment
         }
 
         private String createTitle(ExtensionManager.Extension extension) {
-            String title = extension.label;
+            String title = extension.getLabel();
             if (TextUtils.isEmpty(title)) {
-                title = extension.componentName.flattenToShortString();
+                title = extension.getComponentName().flattenToShortString();
             }
             return title;
         }
@@ -338,8 +338,8 @@ public class ExtensionsConfigurationFragment extends Fragment
             View div = listView.getChildAt(addButtonPosition - first);
 
             if (touchPoint.x > listView.getWidth() / 2) {
-                float scale = touchPoint.x - listView.getWidth() / 2;
-                scale /= ((float) listView.getWidth() / (float) 5);
+                float scale = touchPoint.x - (float) listView.getWidth() / 2;
+                scale /= (double) listView.getWidth() / 5;
                 ViewGroup.LayoutParams lp = floatView.getLayoutParams();
                 lp.height = Math.max(floatViewHeight, (int) (scale * floatViewHeight));
                 floatView.setLayoutParams(lp);

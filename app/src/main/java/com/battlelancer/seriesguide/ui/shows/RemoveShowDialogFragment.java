@@ -33,7 +33,15 @@ public class RemoveShowDialogFragment extends AppCompatDialogFragment {
     private static final String KEY_SHOW_TVDB_ID = "show_tvdb_id";
 
     public static class ShowTitleEvent {
-        public String showTitle;
+        private String showTitle;
+
+        public String getShowTitle() {
+            return showTitle;
+        }
+
+        public void setShowTitle(String showTitle) {
+            this.showTitle = showTitle;
+        }
     }
 
     /**

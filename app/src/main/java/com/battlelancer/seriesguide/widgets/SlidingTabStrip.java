@@ -104,7 +104,7 @@ class SlidingTabStrip extends LinearLayout {
 
             selectedIndicatorPaint.setColor(color);
 
-            canvas.drawRect(left, height - selectedIndicatorThickness, right,
+            canvas.drawRect(left, height - (float) selectedIndicatorThickness, right,
                     height, selectedIndicatorPaint);
         }
     }

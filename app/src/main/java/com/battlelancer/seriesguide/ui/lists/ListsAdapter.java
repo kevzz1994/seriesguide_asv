@@ -16,10 +16,18 @@ import java.util.List;
 class ListsAdapter extends ArrayAdapter<OrderedListsLoader.OrderedList> {
 
     static class ListsViewHolder {
-        public TextView name;
+        private TextView name;
 
         ListsViewHolder(View v) {
             name = v.findViewById(R.id.textViewItemListName);
+        }
+
+        public TextView getName() {
+            return name;
+        }
+
+        public void setName(TextView name) {
+            this.name = name;
         }
     }
 
@@ -46,7 +54,7 @@ class ListsAdapter extends ArrayAdapter<OrderedListsLoader.OrderedList> {
 
         OrderedListsLoader.OrderedList item = getItem(position);
         if (item != null) {
-            viewHolder.name.setText(item.name);
+            viewHolder.name.setText(item.getName());
         }
 
         return convertView;

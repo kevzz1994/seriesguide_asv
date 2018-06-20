@@ -58,10 +58,14 @@ public class ExtensionManager {
      * want to requery available actions.
      */
     public static class EpisodeActionReceivedEvent {
-        public int episodeTvdbId;
+        private int episodeTvdbId;
 
         public EpisodeActionReceivedEvent(int episodeTvdbId) {
             this.episodeTvdbId = episodeTvdbId;
+        }
+
+        public int getEpisodeTvdbId() {
+            return episodeTvdbId;
         }
     }
 
@@ -71,10 +75,14 @@ public class ExtensionManager {
      * want to requery available actions.
      */
     public static class MovieActionReceivedEvent {
-        public int movieTmdbId;
+        private int movieTmdbId;
 
         public MovieActionReceivedEvent(int movieTmdbId) {
             this.movieTmdbId = movieTmdbId;
+        }
+
+        public int getMovieTmdbId() {
+            return movieTmdbId;
         }
     }
 
@@ -541,10 +549,50 @@ public class ExtensionManager {
     }
 
     public class Extension {
-        public Drawable icon;
-        public String label;
-        public ComponentName componentName;
-        public String description;
-        public ComponentName settingsActivity;
+        private Drawable icon;
+        private String label;
+        private ComponentName componentName;
+        private String description;
+        private ComponentName settingsActivity;
+
+        public Drawable getIcon() {
+            return icon;
+        }
+
+        public void setIcon(Drawable icon) {
+            this.icon = icon;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public ComponentName getComponentName() {
+            return componentName;
+        }
+
+        public void setComponentName(ComponentName componentName) {
+            this.componentName = componentName;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public ComponentName getSettingsActivity() {
+            return settingsActivity;
+        }
+
+        public void setSettingsActivity(ComponentName settingsActivity) {
+            this.settingsActivity = settingsActivity;
+        }
     }
 }

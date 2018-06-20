@@ -312,7 +312,7 @@ public class ShowsNowFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventEpisodeTask(BaseNavDrawerActivity.ServiceCompletedEvent event) {
-        if (event.flagJob == null || !event.isSuccessful) {
+        if (event.flagJob == null || !event.isSuccessful()) {
             return; // no changes applied
         }
         if (!isAdded()) {
@@ -352,13 +352,13 @@ public class ShowsNowFragment extends Fragment {
             }
 
             // other actions need at least an episode TVDB id
-            if (item.episodeTvdbId == null) {
+            if (item.getEpisodeTvdbId() == null) {
                 return;
             }
 
             // check if episode is in database
             Cursor query = getActivity().getContentResolver()
-                    .query(SeriesGuideContract.Episodes.buildEpisodeUri(item.episodeTvdbId),
+                    .query(SeriesGuideContract.Episodes.buildEpisodeUri(item.getEpisodeTvdbId()),
                             new String[] { SeriesGuideContract.Episodes._ID }, null, null, null);
             if (query == null) {
                 // query failed
@@ -366,10 +366,10 @@ public class ShowsNowFragment extends Fragment {
             }
             if (query.getCount() == 1) {
                 // episode in database: display details
-                showDetails(view, item.episodeTvdbId);
-            } else if (item.showTvdbId != null) {
+                showDetails(view, item.getEpisodeTvdbId());
+            } else if (item.getShowTvdbId() != null) {
                 // episode missing: show likely not in database, suggest adding it
-                AddShowDialogFragment.showAddDialog(item.showTvdbId, getFragmentManager());
+                AddShowDialogFragment.showAddDialog(item.getShowTvdbId(), getFragmentManager());
             }
             query.close();
         }
@@ -417,7 +417,7 @@ public class ShowsNowFragment extends Fragment {
             if (!isAdded()) {
                 return;
             }
-            adapter.setRecentlyWatched(data.items);
+            adapter.setRecentlyWatched(data.getItems());
             isLoadingRecentlyWatched = false;
             showProgressBar(false);
             showError(data.errorText);

@@ -17,6 +17,7 @@ import com.battlelancer.seriesguide.SgApp;
 import com.battlelancer.seriesguide.settings.NotificationSettings;
 import com.battlelancer.seriesguide.sync.AccountUtils;
 import com.battlelancer.seriesguide.ui.ShowsActivity;
+import com.google.api.client.util.StringUtils;
 import com.uwetrottmann.trakt5.TraktV2;
 import com.uwetrottmann.trakt5.entities.AccessToken;
 import java.io.IOException;
@@ -243,7 +244,7 @@ public class TraktCredentials {
         }
 
         // did we obtain all required data?
-        if (TextUtils.isEmpty(accessToken) || TextUtils.isEmpty(refreshToken) || expiresIn < 1) {
+        if (accessToken == null || refreshToken == null || expiresIn < 1) {
             Timber.e("refreshAccessToken: failed.");
             return false;
         }

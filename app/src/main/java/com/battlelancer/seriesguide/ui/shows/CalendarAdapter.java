@@ -244,14 +244,14 @@ public class CalendarAdapter extends CursorAdapter implements StickyGridHeadersB
 
     static class ViewHolder {
 
-        public TextView show;
-        public TextView episode;
-        public View collected;
-        public WatchedBox watchedBox;
-        public TextView info;
-        public TextView timestamp;
-        public ImageView poster;
-        public int position;
+        private TextView show;
+        private TextView episode;
+        private View collected;
+        private WatchedBox watchedBox;
+        private TextView info;
+        private TextView timestamp;
+        private ImageView poster;
+        private int position;
 
         public ViewHolder(View v, final ItemClickListener itemClickListener) {
             show = v.findViewById(R.id.textViewActivityShow);
@@ -272,10 +272,82 @@ public class CalendarAdapter extends CursorAdapter implements StickyGridHeadersB
             });
             CheatSheet.setup(watchedBox);
         }
+
+        public TextView getShow() {
+            return show;
+        }
+
+        public void setShow(TextView show) {
+            this.show = show;
+        }
+
+        public TextView getEpisode() {
+            return episode;
+        }
+
+        public void setEpisode(TextView episode) {
+            this.episode = episode;
+        }
+
+        public View getCollected() {
+            return collected;
+        }
+
+        public void setCollected(View collected) {
+            this.collected = collected;
+        }
+
+        public WatchedBox getWatchedBox() {
+            return watchedBox;
+        }
+
+        public void setWatchedBox(WatchedBox watchedBox) {
+            this.watchedBox = watchedBox;
+        }
+
+        public TextView getInfo() {
+            return info;
+        }
+
+        public void setInfo(TextView info) {
+            this.info = info;
+        }
+
+        public TextView getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(TextView timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public ImageView getPoster() {
+            return poster;
+        }
+
+        public void setPoster(ImageView poster) {
+            this.poster = poster;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
     }
 
     static class HeaderViewHolder {
 
-        public TextView day;
+        private TextView day;
+
+        public TextView getDay() {
+            return day;
+        }
+
+        public void setDay(TextView day) {
+            this.day = day;
+        }
     }
 }

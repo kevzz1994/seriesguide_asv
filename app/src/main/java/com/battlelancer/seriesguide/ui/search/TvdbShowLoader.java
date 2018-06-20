@@ -18,9 +18,33 @@ import timber.log.Timber;
 class TvdbShowLoader extends GenericSimpleLoader<TvdbShowLoader.Result> {
 
     static class Result {
-        public Show show;
-        public boolean isAdded;
-        public boolean doesNotExist;
+        private Show show;
+        private boolean isAdded;
+        private boolean doesNotExist;
+
+        public Show getShow() {
+            return show;
+        }
+
+        public void setShow(Show show) {
+            this.show = show;
+        }
+
+        public boolean isAdded() {
+            return isAdded;
+        }
+
+        public void setAdded(boolean added) {
+            isAdded = added;
+        }
+
+        public boolean isDoesNotExist() {
+            return doesNotExist;
+        }
+
+        public void setDoesNotExist(boolean doesNotExist) {
+            this.doesNotExist = doesNotExist;
+        }
     }
 
     private final int showTvdbId;

@@ -113,7 +113,7 @@ public class TraktAuthActivity extends BaseOAuthActivity {
     public void onEventMainThread(ConnectTraktTask.FinishedEvent event) {
         taskFragment.setTask(null);
 
-        int resultCode = event.resultCode;
+        int resultCode = event.getResultCode();
         if (resultCode == TraktResult.SUCCESS) {
             // if we got here, looks like credentials were stored successfully
             finish();

@@ -17,7 +17,7 @@ public abstract class BaseJob {
 
     protected boolean persistNetworkJob(Context context, @NonNull byte[] jobInfo) {
         ContentValues values = new ContentValues();
-        values.put(SeriesGuideContract.Jobs.TYPE, action.id);
+        values.put(SeriesGuideContract.Jobs.TYPE, action.getId());
         values.put(SeriesGuideContract.Jobs.CREATED_MS, System.currentTimeMillis());
         values.put(SeriesGuideContract.Jobs.EXTRAS, jobInfo);
 

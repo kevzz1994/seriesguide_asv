@@ -190,8 +190,8 @@ public class ListsFragment extends Fragment implements OnItemClickListener, View
                 popupMenu.inflate(R.menu.lists_popup_menu);
                 popupMenu.setOnMenuItemClickListener(
                         new PopupMenuItemClickListener(getContext(), getFragmentManager(),
-                                viewHolderActual.itemId, viewHolderActual.itemTvdbId,
-                                viewHolderActual.itemType));
+                                viewHolderActual.getItemId(), viewHolderActual.getItemTvdbId(),
+                                viewHolderActual.getItemType()));
                 popupMenu.show();
             }
         }

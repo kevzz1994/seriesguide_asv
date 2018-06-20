@@ -148,6 +148,77 @@ public class OverviewFragment extends Fragment implements
 
     private boolean hasSetEpisodeWatched;
 
+    static String[] EPISODE_QUERY_PROJECTION = new String[] {
+            Episodes._ID,
+            Episodes.NUMBER,
+            Episodes.ABSOLUTE_NUMBER,
+            Episodes.DVDNUMBER,
+            Episodes.SEASON,
+            Seasons.REF_SEASON_ID,
+            Episodes.IMDBID,
+            Episodes.TITLE,
+            Episodes.OVERVIEW,
+            Episodes.FIRSTAIREDMS,
+            Episodes.GUESTSTARS,
+            Episodes.RATING_GLOBAL,
+            Episodes.RATING_VOTES,
+            Episodes.RATING_USER,
+            Episodes.WATCHED,
+            Episodes.COLLECTED,
+            Episodes.IMAGE,
+            Episodes.LAST_EDITED,
+            Episodes.LAST_UPDATED
+    };
+
+    int _ID = 0;
+    int NUMBER = 1;
+    int ABSOLUTE_NUMBER = 2;
+    int DVD_NUMBER = 3;
+    int SEASON = 4;
+    int SEASON_ID = 5;
+    int IMDBID = 6;
+    int TITLE = 7;
+    int OVERVIEW = 8;
+    int FIRST_RELEASE_MS = 9;
+    int GUESTSTARS = 10;
+    int RATING_GLOBAL = 11;
+    int RATING_VOTES = 12;
+    int RATING_USER = 13;
+    int WATCHED = 14;
+    int COLLECTED = 15;
+    int IMAGE = 16;
+    int LAST_EDITED = 17;
+    int LAST_UPDATED = 18;
+
+    String[] SHOW_QUERY_PROJECTION = new String[] {
+            Shows._ID,
+            Shows.TITLE,
+            Shows.STATUS,
+            Shows.RELEASE_TIME,
+            Shows.RELEASE_WEEKDAY,
+            Shows.RELEASE_TIMEZONE,
+            Shows.RELEASE_COUNTRY,
+            Shows.NETWORK,
+            Shows.POSTER,
+            Shows.IMDBID,
+            Shows.RUNTIME,
+            Shows.FAVORITE,
+            Shows.LANGUAGE
+    };
+
+    int SHOW_TITLE = 1;
+    int SHOW_STATUS = 2;
+    int SHOW_RELEASE_TIME = 3;
+    int SHOW_RELEASE_WEEKDAY = 4;
+    int SHOW_RELEASE_TIMEZONE = 5;
+    int SHOW_RELEASE_COUNTRY = 6;
+    int SHOW_NETWORK = 7;
+    int SHOW_POSTER = 8;
+    int SHOW_IMDBID = 9;
+    int SHOW_RUNTIME = 10;
+    int SHOW_FAVORITE = 11;
+    int SHOW_LANGUAGE = 12;
+
     public static OverviewFragment newInstance(int showTvdbId) {
         OverviewFragment f = new OverviewFragment();
 
@@ -296,7 +367,7 @@ public class OverviewFragment extends Fragment implements
         } else if (itemId == R.id.menu_overview_manage_lists) {
             if (isEpisodeDataAvailable) {
                 ManageListsDialogFragment.showListsDialog(
-                        currentEpisodeCursor.getInt(EpisodeQuery._ID),
+                        currentEpisodeCursor.getInt(_ID),
                         ListItemTypes.EPISODE, getFragmentManager());
             }
             Utils.trackAction(getActivity(), TAG, "Manage lists");
@@ -309,17 +380,17 @@ public class OverviewFragment extends Fragment implements
         if (!isShowDataAvailable || !isEpisodeDataAvailable) {
             return;
         }
-        final int seasonNumber = currentEpisodeCursor.getInt(EpisodeQuery.SEASON);
-        final int episodeNumber = currentEpisodeCursor.getInt(EpisodeQuery.NUMBER);
-        final String episodeTitle = currentEpisodeCursor.getString(EpisodeQuery.TITLE);
+        final int seasonNumber = currentEpisodeCursor.getInt(SEASON);
+        final int episodeNumber = currentEpisodeCursor.getInt(NUMBER);
+        final String episodeTitle = currentEpisodeCursor.getString(TITLE);
         // add calendar event
         ShareUtils.suggestCalendarEvent(
                 getActivity(),
-                showCursor.getString(ShowQuery.SHOW_TITLE),
+                showCursor.getString(SHOW_TITLE),
                 TextTools.getNextEpisodeString(getActivity(), seasonNumber, episodeNumber,
                         episodeTitle),
-                currentEpisodeCursor.getLong(EpisodeQuery.FIRST_RELEASE_MS),
-                showCursor.getInt(ShowQuery.SHOW_RUNTIME)
+                currentEpisodeCursor.getLong(FIRST_RELEASE_MS),
+                showCursor.getInt(SHOW_RUNTIME)
         );
 
         Utils.trackAction(getActivity(), TAG, "Add to calendar");
@@ -343,7 +414,7 @@ public class OverviewFragment extends Fragment implements
         if (!isEpisodeDataAvailable) {
             return;
         }
-        int episodeTvdbId = currentEpisodeCursor.getInt(EpisodeQuery._ID);
+        int episodeTvdbId = currentEpisodeCursor.getInt(_ID);
         // check in
         CheckInDialogFragment f = CheckInDialogFragment.newInstance(getActivity(),
                 episodeTvdbId);
@@ -366,11 +437,11 @@ public class OverviewFragment extends Fragment implements
         if (!isEpisodeDataAvailable) {
             return;
         }
-        final int season = currentEpisodeCursor.getInt(EpisodeQuery.SEASON);
-        final int episode = currentEpisodeCursor.getInt(EpisodeQuery.NUMBER);
-        final boolean isCollected = currentEpisodeCursor.getInt(EpisodeQuery.COLLECTED) == 1;
+        final int season = currentEpisodeCursor.getInt(SEASON);
+        final int episode = currentEpisodeCursor.getInt(NUMBER);
+        final boolean isCollected = currentEpisodeCursor.getInt(COLLECTED) == 1;
         EpisodeTools.episodeCollected(getContext(), showTvdbId,
-                currentEpisodeCursor.getInt(EpisodeQuery._ID), season, episode, !isCollected);
+                currentEpisodeCursor.getInt(_ID), season, episode, !isCollected);
 
         Utils.trackAction(getActivity(), TAG, "Toggle Collected");
     }
@@ -385,10 +456,10 @@ public class OverviewFragment extends Fragment implements
         if (!isEpisodeDataAvailable) {
             return;
         }
-        final int season = currentEpisodeCursor.getInt(EpisodeQuery.SEASON);
-        final int episode = currentEpisodeCursor.getInt(EpisodeQuery.NUMBER);
+        final int season = currentEpisodeCursor.getInt(SEASON);
+        final int episode = currentEpisodeCursor.getInt(NUMBER);
         EpisodeTools.episodeWatched(getContext(), showTvdbId,
-                currentEpisodeCursor.getInt(EpisodeQuery._ID), season, episode, episodeFlag);
+                currentEpisodeCursor.getInt(_ID), season, episode, episodeFlag);
     }
 
     @OnClick(R.id.containerRatings)
@@ -408,7 +479,7 @@ public class OverviewFragment extends Fragment implements
         if (isEpisodeDataAvailable) {
             Intent i = new Intent(getActivity(), TraktCommentsActivity.class);
             i.putExtras(TraktCommentsActivity.createInitBundleEpisode(
-                    currentEpisodeCursor.getString(EpisodeQuery.TITLE),
+                    currentEpisodeCursor.getString(TITLE),
                     currentEpisodeTvdbId
             ));
             Utils.startActivityWithAnimation(getActivity(), i, v);
@@ -420,11 +491,11 @@ public class OverviewFragment extends Fragment implements
         if (!isShowDataAvailable || !isEpisodeDataAvailable) {
             return;
         }
-        int seasonTvdbId = currentEpisodeCursor.getInt(EpisodeQuery.SEASON_ID);
-        int seasonNumber = currentEpisodeCursor.getInt(EpisodeQuery.SEASON);
-        int episodeNumber = currentEpisodeCursor.getInt(EpisodeQuery.NUMBER);
-        String episodeTitle = currentEpisodeCursor.getString(EpisodeQuery.TITLE);
-        String languageCode = showCursor.getString(ShowQuery.SHOW_LANGUAGE);
+        int seasonTvdbId = currentEpisodeCursor.getInt(SEASON_ID);
+        int seasonNumber = currentEpisodeCursor.getInt(SEASON);
+        int episodeNumber = currentEpisodeCursor.getInt(NUMBER);
+        String episodeTitle = currentEpisodeCursor.getString(TITLE);
+        String languageCode = showCursor.getString(SHOW_LANGUAGE);
 
         ShareUtils.shareEpisode(getActivity(), showTvdbId, seasonTvdbId, currentEpisodeTvdbId,
                 seasonNumber, episodeNumber, showTitle, episodeTitle, languageCode);
@@ -439,7 +510,7 @@ public class OverviewFragment extends Fragment implements
         public EpisodeLoader(Context context, int showTvdbId) {
             super(context);
             this.showTvdbId = showTvdbId;
-            setProjection(EpisodeQuery.PROJECTION);
+            setProjection(EPISODE_QUERY_PROJECTION);
         }
 
         @Override
@@ -452,83 +523,6 @@ public class OverviewFragment extends Fragment implements
         }
     }
 
-    interface EpisodeQuery {
-
-        String[] PROJECTION = new String[] {
-                Episodes._ID,
-                Episodes.NUMBER,
-                Episodes.ABSOLUTE_NUMBER,
-                Episodes.DVDNUMBER,
-                Episodes.SEASON,
-                Seasons.REF_SEASON_ID,
-                Episodes.IMDBID,
-                Episodes.TITLE,
-                Episodes.OVERVIEW,
-                Episodes.FIRSTAIREDMS,
-                Episodes.GUESTSTARS,
-                Episodes.RATING_GLOBAL,
-                Episodes.RATING_VOTES,
-                Episodes.RATING_USER,
-                Episodes.WATCHED,
-                Episodes.COLLECTED,
-                Episodes.IMAGE,
-                Episodes.LAST_EDITED,
-                Episodes.LAST_UPDATED
-        };
-
-        int _ID = 0;
-        int NUMBER = 1;
-        int ABSOLUTE_NUMBER = 2;
-        int DVD_NUMBER = 3;
-        int SEASON = 4;
-        int SEASON_ID = 5;
-        int IMDBID = 6;
-        int TITLE = 7;
-        int OVERVIEW = 8;
-        int FIRST_RELEASE_MS = 9;
-        int GUESTSTARS = 10;
-        int RATING_GLOBAL = 11;
-        int RATING_VOTES = 12;
-        int RATING_USER = 13;
-        int WATCHED = 14;
-        int COLLECTED = 15;
-        int IMAGE = 16;
-        int LAST_EDITED = 17;
-        int LAST_UPDATED = 18;
-    }
-
-    interface ShowQuery {
-
-        String[] PROJECTION = new String[] {
-                Shows._ID,
-                Shows.TITLE,
-                Shows.STATUS,
-                Shows.RELEASE_TIME,
-                Shows.RELEASE_WEEKDAY,
-                Shows.RELEASE_TIMEZONE,
-                Shows.RELEASE_COUNTRY,
-                Shows.NETWORK,
-                Shows.POSTER,
-                Shows.IMDBID,
-                Shows.RUNTIME,
-                Shows.FAVORITE,
-                Shows.LANGUAGE
-        };
-
-        int SHOW_TITLE = 1;
-        int SHOW_STATUS = 2;
-        int SHOW_RELEASE_TIME = 3;
-        int SHOW_RELEASE_WEEKDAY = 4;
-        int SHOW_RELEASE_TIMEZONE = 5;
-        int SHOW_RELEASE_COUNTRY = 6;
-        int SHOW_NETWORK = 7;
-        int SHOW_POSTER = 8;
-        int SHOW_IMDBID = 9;
-        int SHOW_RUNTIME = 10;
-        int SHOW_FAVORITE = 11;
-        int SHOW_LANGUAGE = 12;
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
@@ -537,7 +531,7 @@ public class OverviewFragment extends Fragment implements
                 return new EpisodeLoader(getActivity(), showTvdbId);
             case OverviewActivity.OVERVIEW_SHOW_LOADER_ID:
                 return new CursorLoader(getActivity(), Shows.buildShowUri(String
-                        .valueOf(showTvdbId)), ShowQuery.PROJECTION, null, null, null);
+                        .valueOf(showTvdbId)), SHOW_QUERY_PROJECTION, null, null, null);
         }
     }
 
@@ -548,10 +542,16 @@ public class OverviewFragment extends Fragment implements
         }
         switch (loader.getId()) {
             case OverviewActivity.OVERVIEW_EPISODE_LOADER_ID:
-                isEpisodeDataAvailable = data != null && data.moveToFirst();
-                currentEpisodeCursor = data;
-                maybeAddFeedbackView();
-                setupEpisodeViews(data);
+                if (data == null) {
+                    isEpisodeDataAvailable = false;
+                    currentEpisodeCursor = null;
+                    maybeAddFeedbackView();
+                } else {
+                    isEpisodeDataAvailable = data.moveToFirst();
+                    currentEpisodeCursor = data;
+                    maybeAddFeedbackView();
+                    setupEpisodeViews(data);
+                }
                 break;
             case OverviewActivity.OVERVIEW_SHOW_LOADER_ID:
                 isShowDataAvailable = data != null && data.moveToFirst();
@@ -580,7 +580,7 @@ public class OverviewFragment extends Fragment implements
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ExtensionManager.EpisodeActionReceivedEvent event) {
-        if (currentEpisodeTvdbId == event.episodeTvdbId) {
+        if (currentEpisodeTvdbId == event.getEpisodeTvdbId()) {
             loadEpisodeActionsDelayed();
         }
     }
@@ -609,7 +609,7 @@ public class OverviewFragment extends Fragment implements
     private void setupEpisodeViews(Cursor episode) {
         if (isEpisodeDataAvailable) {
             // some episode properties
-            currentEpisodeTvdbId = episode.getInt(EpisodeQuery._ID);
+            currentEpisodeTvdbId = episode.getInt(_ID);
 
             // make title and image clickable
             containerEpisodePrimary.setOnClickListener(episodeClickListener);
@@ -628,7 +628,7 @@ public class OverviewFragment extends Fragment implements
 
             // load full info and ratings, image, actions
             loadEpisodeDetails();
-            loadEpisodeImage(episode.getString(EpisodeQuery.IMAGE));
+            loadEpisodeImage(episode.getString(IMAGE));
             loadEpisodeActionsDelayed();
 
             containerEpisodeMeta.setVisibility(View.VISIBLE);
@@ -661,11 +661,11 @@ public class OverviewFragment extends Fragment implements
 
     private void populateEpisodeViews(Cursor episode) {
         // title
-        int season = episode.getInt(EpisodeQuery.SEASON);
-        int number = episode.getInt(EpisodeQuery.NUMBER);
+        int season = episode.getInt(SEASON);
+        int number = episode.getInt(NUMBER);
         final String title = TextTools.getEpisodeTitle(getContext(),
                 DisplaySettings.preventSpoilers(getContext())
-                        ? null : episode.getString(EpisodeQuery.TITLE), number);
+                        ? null : episode.getString(TITLE), number);
         textEpisodeTitle.setText(title);
 
         // number
@@ -673,14 +673,14 @@ public class OverviewFragment extends Fragment implements
         infoText.append(getString(R.string.season_number, season));
         infoText.append(" ");
         infoText.append(getString(R.string.episode_number, number));
-        int episodeAbsoluteNumber = episode.getInt(EpisodeQuery.ABSOLUTE_NUMBER);
+        int episodeAbsoluteNumber = episode.getInt(ABSOLUTE_NUMBER);
         if (episodeAbsoluteNumber > 0 && episodeAbsoluteNumber != number) {
             infoText.append(" (").append(episodeAbsoluteNumber).append(")");
         }
         textEpisodeNumbers.setText(infoText);
 
         // air date
-        long releaseTime = episode.getLong(EpisodeQuery.FIRST_RELEASE_MS);
+        long releaseTime = episode.getLong(FIRST_RELEASE_MS);
         if (releaseTime != -1) {
             Date actualRelease = TimeTools.applyUserOffset(getContext(), releaseTime);
             // "Oct 31 (Fri)" or "in 14 mins (Fri)"
@@ -697,7 +697,7 @@ public class OverviewFragment extends Fragment implements
         }
 
         // collected button
-        boolean isCollected = episode.getInt(EpisodeQuery.COLLECTED) == 1;
+        boolean isCollected = episode.getInt(COLLECTED) == 1;
         Resources.Theme theme = getContext().getTheme();
         if (isCollected) {
             ViewTools.setVectorDrawableTop(theme, buttonCollect, R.drawable.ic_collected_24dp);
@@ -711,28 +711,28 @@ public class OverviewFragment extends Fragment implements
 
         // dvd number
         boolean isShowingMeta = ViewTools.setLabelValueOrHide(labelDvdNumber, textDvdNumber,
-                episode.getDouble(EpisodeQuery.DVD_NUMBER));
+                episode.getDouble(DVD_NUMBER));
         // guest stars
         isShowingMeta |= ViewTools.setLabelValueOrHide(labelGuestStars, textGuestStars,
-                TextTools.splitAndKitTVDBStrings(episode.getString(EpisodeQuery.GUESTSTARS)));
+                TextTools.splitAndKitTVDBStrings(episode.getString(GUESTSTARS)));
         // hide divider if no meta is visible
         dividerEpisodeMeta.setVisibility(isShowingMeta ? View.VISIBLE : View.GONE);
 
         // trakt rating
         textRating.setText(
-                TraktTools.buildRatingString(episode.getDouble(EpisodeQuery.RATING_GLOBAL)));
+                TraktTools.buildRatingString(episode.getDouble(RATING_GLOBAL)));
         textRatingVotes.setText(TraktTools.buildRatingVotesString(getActivity(),
-                episode.getInt(EpisodeQuery.RATING_VOTES)));
+                episode.getInt(RATING_VOTES)));
 
         // user rating
         textUserRating.setText(TraktTools.buildUserRatingString(getActivity(),
-                episode.getInt(EpisodeQuery.RATING_USER)));
+                episode.getInt(RATING_USER)));
 
         // IMDb button
-        String imdbId = episode.getString(EpisodeQuery.IMDBID);
+        String imdbId = episode.getString(IMDBID);
         if (TextUtils.isEmpty(imdbId) && showCursor != null) {
             // fall back to show IMDb id
-            imdbId = showCursor.getString(ShowQuery.SHOW_IMDBID);
+            imdbId = showCursor.getString(SHOW_IMDBID);
         }
         ServiceUtils.setUpImdbButton(imdbId, buttonImdb, TAG);
 
@@ -749,8 +749,8 @@ public class OverviewFragment extends Fragment implements
             // no show or episode data available
             return;
         }
-        String overview = currentEpisodeCursor.getString(EpisodeQuery.OVERVIEW);
-        String languageCode = showCursor.getString(ShowQuery.SHOW_LANGUAGE);
+        String overview = currentEpisodeCursor.getString(OVERVIEW);
+        String languageCode = showCursor.getString(SHOW_LANGUAGE);
         if (TextUtils.isEmpty(overview)) {
             // no description available, show no translation available message
             overview = getString(R.string.no_translation,
@@ -759,13 +759,13 @@ public class OverviewFragment extends Fragment implements
         } else if (DisplaySettings.preventSpoilers(getContext())) {
             overview = getString(R.string.no_spoilers);
         }
-        long lastEditSeconds = currentEpisodeCursor.getLong(EpisodeQuery.LAST_EDITED);
+        long lastEditSeconds = currentEpisodeCursor.getLong(LAST_EDITED);
         textDescription.setText(TextTools.textWithTvdbSource(textDescription.getContext(),
                 overview, lastEditSeconds));
 
         // TVDb button
-        final int episodeTvdbId = currentEpisodeCursor.getInt(EpisodeQuery._ID);
-        final int seasonTvdbId = currentEpisodeCursor.getInt(EpisodeQuery.SEASON_ID);
+        final int episodeTvdbId = currentEpisodeCursor.getInt(_ID);
+        final int seasonTvdbId = currentEpisodeCursor.getInt(SEASON_ID);
         String uri = TvdbLinks.episode(showTvdbId, seasonTvdbId, episodeTvdbId, languageCode);
         ViewTools.openUriOnClick(buttonTvdb, uri, TAG, "TVDb");
     }
@@ -832,15 +832,15 @@ public class OverviewFragment extends Fragment implements
         }
 
         if (detailsTask == null || detailsTask.getStatus() == AsyncTask.Status.FINISHED) {
-            long lastEdited = currentEpisodeCursor.getLong(EpisodeQuery.LAST_EDITED);
-            long lastUpdated = currentEpisodeCursor.getLong(EpisodeQuery.LAST_UPDATED);
+            long lastEdited = currentEpisodeCursor.getLong(LAST_EDITED);
+            long lastUpdated = currentEpisodeCursor.getLong(LAST_UPDATED);
             detailsTask = TvdbEpisodeDetailsTask.runIfOutdated(getContext(), showTvdbId,
                     currentEpisodeTvdbId, lastEdited, lastUpdated);
         }
 
         if (ratingsTask == null || ratingsTask.getStatus() == AsyncTask.Status.FINISHED) {
-            int seasonNumber = currentEpisodeCursor.getInt(EpisodeQuery.SEASON);
-            int episodeNumber = currentEpisodeCursor.getInt(EpisodeQuery.NUMBER);
+            int seasonNumber = currentEpisodeCursor.getInt(SEASON);
+            int episodeNumber = currentEpisodeCursor.getInt(NUMBER);
             ratingsTask = new TraktRatingsTask(getContext(), showTvdbId,
                     currentEpisodeTvdbId, seasonNumber, episodeNumber);
             ratingsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -849,7 +849,7 @@ public class OverviewFragment extends Fragment implements
 
     private void populateShowViews(@NonNull Cursor show) {
         // set show title in action bar
-        showTitle = show.getString(ShowQuery.SHOW_TITLE);
+        showTitle = show.getString(SHOW_TITLE);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(showTitle);
@@ -862,10 +862,10 @@ public class OverviewFragment extends Fragment implements
 
         // status
         final TextView statusText = getView().findViewById(R.id.showStatus);
-        ShowTools.setStatusAndColor(statusText, show.getInt(ShowQuery.SHOW_STATUS));
+        ShowTools.setStatusAndColor(statusText, show.getInt(SHOW_STATUS));
 
         // favorite
-        boolean isFavorite = show.getInt(ShowQuery.SHOW_FAVORITE) == 1;
+        boolean isFavorite = show.getInt(SHOW_FAVORITE) == 1;
         ViewTools.setVectorIcon(getActivity().getTheme(), buttonFavorite, isFavorite
                 ? R.drawable.ic_star_black_24dp
                 : R.drawable.ic_star_border_black_24dp);
@@ -876,19 +876,19 @@ public class OverviewFragment extends Fragment implements
 
         // poster background
         TvdbImageTools.loadShowPosterAlpha(getActivity(), imageBackground,
-                show.getString(ShowQuery.SHOW_POSTER));
+                show.getString(SHOW_POSTER));
 
         // regular network and time
-        String network = show.getString(ShowQuery.SHOW_NETWORK);
+        String network = show.getString(SHOW_NETWORK);
         String time = null;
-        int releaseTime = show.getInt(ShowQuery.SHOW_RELEASE_TIME);
+        int releaseTime = show.getInt(SHOW_RELEASE_TIME);
         if (releaseTime != -1) {
-            int weekDay = show.getInt(ShowQuery.SHOW_RELEASE_WEEKDAY);
+            int weekDay = show.getInt(SHOW_RELEASE_WEEKDAY);
             Date release = TimeTools.getShowReleaseDateTime(getActivity(),
                     releaseTime,
                     weekDay,
-                    show.getString(ShowQuery.SHOW_RELEASE_TIMEZONE),
-                    show.getString(ShowQuery.SHOW_RELEASE_COUNTRY),
+                    show.getString(SHOW_RELEASE_TIMEZONE),
+                    show.getString(SHOW_RELEASE_COUNTRY),
                     network);
             String dayString = TimeTools.formatToLocalDayOrDaily(getActivity(), release, weekDay);
             String timeString = TimeTools.formatToLocalTime(getActivity(), release);

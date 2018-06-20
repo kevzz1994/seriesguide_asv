@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.battlelancer.seriesguide.R;
 import com.battlelancer.seriesguide.provider.SeriesGuideContract.Shows;
 import com.battlelancer.seriesguide.provider.SeriesGuideDatabase;
@@ -25,18 +26,20 @@ import com.battlelancer.seriesguide.sync.SgSyncAdapter;
 import com.battlelancer.seriesguide.util.TaskManager;
 import com.battlelancer.seriesguide.util.Utils;
 import com.uwetrottmann.androidutils.AndroidUtils;
+
 import java.io.File;
 import java.io.IOException;
+
 import timber.log.Timber;
 
 /**
  * <b>DEPRECATED.</b> Just keeping this around for legacy users. Copying the database file for
  * backup is dangerous because if the database is accessed while copied the app will crash or behave
  * unreliably.
- *
+ * <p>
  * <p>Also the tasks in this class reference the activity, which in itself is badly designed (they
  * should be static).
- *
+ * <p>
  * <p>Allows to back up or restore the show database to external storage.
  */
 public class BackupDeleteActivity extends BaseActivity {
@@ -147,8 +150,9 @@ public class BackupDeleteActivity extends BaseActivity {
 
             String errorMsg = null;
             try {
-                file.createNewFile();
-                AndroidUtils.copyFile(dbFile, file);
+                if (file.createNewFile()) {
+                    AndroidUtils.copyFile(dbFile, file);
+                }
             } catch (IOException e) {
                 Timber.e(e, "Creating backup failed");
                 errorMsg = e.getMessage();
@@ -209,8 +213,9 @@ public class BackupDeleteActivity extends BaseActivity {
             getApplication().deleteDatabase(SeriesGuideDatabase.DATABASE_NAME);
 
             try {
-                dbFile.createNewFile();
-                AndroidUtils.copyFile(dbBackupFile, dbFile);
+                if (dbFile.createNewFile()) {
+                    AndroidUtils.copyFile(dbBackupFile, dbFile);
+                }
 
                 getContentResolver().notifyChange(Shows.CONTENT_URI, null);
 
@@ -219,13 +224,14 @@ public class BackupDeleteActivity extends BaseActivity {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Timber.e(e, "Failed to sleep");
+                    Thread.currentThread().interrupt();
                 }
 
                 // tell user something might have gone wrong if there are no
                 // shows in the database right now
                 try {
                     final Cursor shows = getContentResolver().query(Shows.CONTENT_URI,
-                            new String[] {
+                            new String[]{
                                     Shows._ID
                             }, null, null, null
                     );

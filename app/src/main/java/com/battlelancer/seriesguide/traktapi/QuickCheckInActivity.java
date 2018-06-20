@@ -65,14 +65,14 @@ public class QuickCheckInActivity extends FragmentActivity {
     @SuppressWarnings("unused")
     @Subscribe
     public void onEvent(TraktTask.TraktActionCompleteEvent event) {
-        if (event.traktAction != TraktAction.CHECKIN_EPISODE) {
+        if (event.getTraktAction() != TraktAction.CHECKIN_EPISODE) {
             return;
         }
         // display status toast about trakt action
         event.handle(this);
 
         // dismiss notification on successful check-in
-        if (event.wasSuccessful) {
+        if (event.isWasSuccessful()) {
             NotificationManagerCompat manager = NotificationManagerCompat.from(
                     getApplicationContext());
             manager.cancel(SgApp.NOTIFICATION_EPISODE_ID);

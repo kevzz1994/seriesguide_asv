@@ -1285,8 +1285,8 @@ public class SeriesGuideDatabase extends SQLiteOpenHelper {
     }
 
     // This should match QUERY_SEARCH_EPISODES//
-    public interface EpisodeSearchQuery {
-        String[] PROJECTION = new String[] {
+    public static class EpisodeSearchQuery {
+        public static final String[] PROJECTION = new String[] {
                 Episodes._ID,
                 Episodes.TITLE,
                 Episodes.NUMBER,
@@ -1297,14 +1297,14 @@ public class SeriesGuideDatabase extends SQLiteOpenHelper {
                 Shows.POSTER
         };
 
-        int _ID = 0;
-        int TITLE = 1;
-        int NUMBER = 2;
-        int SEASON = 3;
-        int WATCHED = 4;
-        int OVERVIEW = 5;
-        int SHOW_TITLE = 6;
-        int SHOW_POSTER = 7;
+        public static final int _ID = 0;
+        public static final int TITLE = 1;
+        public static final int NUMBER = 2;
+        public static final int SEASON = 3;
+        public static final int WATCHED = 4;
+        public static final int OVERVIEW = 5;
+        public static final int SHOW_TITLE = 6;
+        public static final int SHOW_POSTER = 7;
     }
 
     private final static String EPISODE_COLUMNS = Episodes._ID + ","

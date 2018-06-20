@@ -17,7 +17,7 @@ import com.battlelancer.seriesguide.settings.DisplaySettings;
 import com.battlelancer.seriesguide.util.DBUtils;
 import com.battlelancer.seriesguide.ui.shows.ShowTools;
 
-class StatsLiveData extends LiveData<StatsLiveData.StatsUpdateEvent> {
+public class StatsLiveData extends LiveData<StatsLiveData.StatsUpdateEvent> {
 
     private final Context context;
     private AsyncTask<Void, StatsUpdateEvent, StatsUpdateEvent> task;
@@ -232,7 +232,7 @@ class StatsLiveData extends LiveData<StatsLiveData.StatsUpdateEvent> {
     }
 
     // class is package-private so direct member access is fine
-    static class Stats {
+    public static class Stats {
         int shows;
         int showsContinuing;
         int showsWithNextEpisodes;
@@ -242,5 +242,77 @@ class StatsLiveData extends LiveData<StatsLiveData.StatsUpdateEvent> {
         int movies;
         int moviesWatchlist;
         long moviesWatchlistRuntime;
+
+        public int getShows() {
+            return shows;
+        }
+
+        public void setShows(int shows) {
+            this.shows = shows;
+        }
+
+        public int getShowsContinuing() {
+            return showsContinuing;
+        }
+
+        public void setShowsContinuing(int showsContinuing) {
+            this.showsContinuing = showsContinuing;
+        }
+
+        public int getShowsWithNextEpisodes() {
+            return showsWithNextEpisodes;
+        }
+
+        public void setShowsWithNextEpisodes(int showsWithNextEpisodes) {
+            this.showsWithNextEpisodes = showsWithNextEpisodes;
+        }
+
+        public int getEpisodes() {
+            return episodes;
+        }
+
+        public void setEpisodes(int episodes) {
+            this.episodes = episodes;
+        }
+
+        public int getEpisodesWatched() {
+            return episodesWatched;
+        }
+
+        public void setEpisodesWatched(int episodesWatched) {
+            this.episodesWatched = episodesWatched;
+        }
+
+        public long getEpisodesWatchedRuntime() {
+            return episodesWatchedRuntime;
+        }
+
+        public void setEpisodesWatchedRuntime(long episodesWatchedRuntime) {
+            this.episodesWatchedRuntime = episodesWatchedRuntime;
+        }
+
+        public int getMovies() {
+            return movies;
+        }
+
+        public void setMovies(int movies) {
+            this.movies = movies;
+        }
+
+        public int getMoviesWatchlist() {
+            return moviesWatchlist;
+        }
+
+        public void setMoviesWatchlist(int moviesWatchlist) {
+            this.moviesWatchlist = moviesWatchlist;
+        }
+
+        public long getMoviesWatchlistRuntime() {
+            return moviesWatchlistRuntime;
+        }
+
+        public void setMoviesWatchlistRuntime(long moviesWatchlistRuntime) {
+            this.moviesWatchlistRuntime = moviesWatchlistRuntime;
+        }
     }
 }

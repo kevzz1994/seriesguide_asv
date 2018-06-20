@@ -91,8 +91,8 @@ public class UserEpisodeStreamFragment extends StreamFragment {
                     if (!isAdded()) {
                         return;
                     }
-                    adapter.setData(data.results);
-                    setEmptyMessage(data.emptyText);
+                    adapter.setData(data.getResults());
+                    setEmptyMessage(data.getEmptyText());
                     showProgressBar(false);
                 }
 

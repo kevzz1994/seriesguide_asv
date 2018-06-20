@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Xml;
+
 import com.battlelancer.seriesguide.R;
 import com.battlelancer.seriesguide.backend.HexagonTools;
 import com.battlelancer.seriesguide.backend.settings.HexagonSettings;
@@ -43,7 +44,9 @@ import com.uwetrottmann.trakt5.entities.BaseShow;
 import com.uwetrottmann.trakt5.enums.Extended;
 import com.uwetrottmann.trakt5.enums.IdType;
 import com.uwetrottmann.trakt5.enums.Type;
+
 import dagger.Lazy;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -52,13 +55,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipInputStream;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+
 import timber.log.Timber;
 
 /**
@@ -126,18 +133,18 @@ public class TvdbTools {
 
     /**
      * Adds a show and its episodes to the database. If the show already exists, does nothing.
-     *
+     * <p>
      * <p> If signed in to Hexagon, gets show properties and episode flags.
-     *
+     * <p>
      * <p> If connected to trakt, but not signed in to Hexagon, gets episode flags from trakt
      * instead.
      *
      * @return True, if the show and its episodes were added to the database.
      */
     public boolean addShow(int showTvdbId, @Nullable String language,
-            @Nullable HashMap<Integer, BaseShow> traktCollection,
-            @Nullable HashMap<Integer, BaseShow> traktWatched,
-            HexagonEpisodeSync hexagonEpisodeSync)
+                           @Nullable HashMap<Integer, BaseShow> traktCollection,
+                           @Nullable HashMap<Integer, BaseShow> traktWatched,
+                           HexagonEpisodeSync hexagonEpisodeSync)
             throws TvdbException {
         boolean isShowExists = DBUtils.isShowExists(context, showTvdbId);
         if (isShowExists) {
@@ -147,7 +154,7 @@ public class TvdbTools {
         // get show and determine the language to use
         boolean hexagonEnabled = HexagonSettings.isEnabled(context);
         Show show = getShowDetailsWithHexagon(showTvdbId, language, hexagonEnabled);
-        language = show.language;
+        language = show.getLanguage();
 
         // get episodes and store everything to the database
         final ArrayList<ContentProviderOperation> batch = new ArrayList<>();
@@ -205,7 +212,7 @@ public class TvdbTools {
 
         // get episodes in the language as returned in the TVDB show entry
         // the show might not be available in the desired language
-        getEpisodesAndUpdateDatabase(batch, show, show.language);
+        getEpisodesAndUpdateDatabase(batch, show, show.getLanguage());
     }
 
     public static String getShowLanguage(Context context, int showTvdbId) {
@@ -334,7 +341,7 @@ public class TvdbTools {
      * information to the database.
      */
     private void getEpisodesAndUpdateDatabase(final ArrayList<ContentProviderOperation> batch,
-            Show show, String language) throws TvdbException {
+                                              Show show, String language) throws TvdbException {
         // get ops for episodes of this show
         TvdbEpisodeTools episodeTools = new TvdbEpisodeTools(context, tvdbSeries);
         ArrayList<ContentValues> importShowEpisodes = episodeTools
@@ -358,7 +365,7 @@ public class TvdbTools {
      */
     @NonNull
     private Show getShowDetailsWithHexagon(int showTvdbId, @Nullable String language,
-            boolean hexagonEnabled)
+                                           boolean hexagonEnabled)
             throws TvdbException {
         // check for show on hexagon
         com.uwetrottmann.seriesguide.backend.shows.model.Show hexagonShow = null;
@@ -385,18 +392,20 @@ public class TvdbTools {
         }
 
         // get show info from TVDb and trakt
-        Show show = getShowDetails(showTvdbId, language);
+        Show show = new Show();
+        if (language != null)
+            show = getShowDetails(showTvdbId, language);
 
         if (hexagonShow != null) {
             // restore properties from hexagon
             if (hexagonShow.getIsFavorite() != null) {
-                show.favorite = hexagonShow.getIsFavorite();
+                show.setFavorite(hexagonShow.getIsFavorite());
             }
             if (hexagonShow.getNotify() != null) {
-                show.notify = hexagonShow.getNotify();
+                show.setNotify(hexagonShow.getNotify());
             }
             if (hexagonShow.getIsHidden() != null) {
-                show.hidden = hexagonShow.getIsHidden();
+                show.setHidden(hexagonShow.getIsHidden());
             }
         }
 
@@ -408,8 +417,8 @@ public class TvdbTools {
      * information from trakt.
      *
      * @param language A TVDb language code (ISO 639-1 two-letter format, see <a
-     * href="http://www.thetvdb.com/wiki/index.php/API:languages.xml">TVDb wiki</a>). If not
-     * supplied, TVDb falls back to English.
+     *                 href="http://www.thetvdb.com/wiki/index.php/API:languages.xml">TVDb wiki</a>). If not
+     *                 supplied, TVDb falls back to English.
      * @throws TvdbException If a request fails or a response appears to be corrupted.
      */
     @NonNull
@@ -431,24 +440,24 @@ public class TvdbTools {
                 throw new TvdbTraktException("getShowDetails: failed to get trakt show details.");
             }
             if (traktShow.ids != null && traktShow.ids.trakt != null) {
-                show.trakt_id = traktShow.ids.trakt;
+                show.setTrakt_id(traktShow.ids.trakt);
             }
             if (traktShow.airs != null) {
-                show.release_time = TimeTools.parseShowReleaseTime(traktShow.airs.time);
-                show.release_weekday = TimeTools.parseShowReleaseWeekDay(traktShow.airs.day);
-                show.release_timezone = traktShow.airs.timezone;
+                show.setRelease_time(TimeTools.parseShowReleaseTime(traktShow.airs.time));
+                show.setRelease_weekday(TimeTools.parseShowReleaseWeekDay(traktShow.airs.day));
+                show.setRelease_timezone(traktShow.airs.timezone);
             }
-            show.country = traktShow.country;
-            show.first_aired = TimeTools.parseShowFirstRelease(traktShow.first_aired);
-            show.rating = traktShow.rating == null ? 0.0 : traktShow.rating;
+            show.setCountry(traktShow.country);
+            show.setFirst_aired(TimeTools.parseShowFirstRelease(traktShow.first_aired));
+            show.setRating(traktShow.rating == null ? 0.0 : traktShow.rating);
         } else {
             // no trakt id (show not on trakt): set default values
             Timber.w("getShowDetails: no trakt id found, using default values.");
-            show.trakt_id = null;
-            show.release_time = -1;
-            show.release_weekday = -1;
-            show.first_aired = "";
-            show.rating = 0.0;
+            show.setTrakt_id(null);
+            show.setRelease_time(-1);
+            show.setRelease_weekday(-1);
+            show.setFirst_aired("");
+            show.setRating(0.0);
         }
 
         return show;
@@ -502,41 +511,41 @@ public class TvdbTools {
         }
 
         Show result = new Show();
-        result.tvdb_id = showTvdbId;
+        result.setTvdb_id(showTvdbId);
         // actors are unused, are fetched from tmdb
-        result.title = series.seriesName != null ? series.seriesName.trim() : null;
-        result.network = series.network;
-        result.content_rating = series.rating;
-        result.imdb_id = series.imdbId;
-        result.genres = TextTools.mendTvdbStrings(series.genre);
-        result.language = desiredLanguage; // requested language, might not be the content language.
-        result.last_edited = series.lastUpdated;
+        result.setTitle(series.seriesName != null ? series.seriesName.trim() : null);
+        result.setNetwork(series.network);
+        result.setContent_rating(series.rating);
+        result.setImdb_id(series.imdbId);
+        result.setGenres(TextTools.mendTvdbStrings(series.genre));
+        result.setLanguage(desiredLanguage); // requested language, might not be the content language.
+        result.setLast_edited(series.lastUpdated);
         if (noTranslation || TextUtils.isEmpty(series.overview)) {
             // add note about non-translated or non-existing overview
             String untranslatedOverview = series.overview;
-            result.overview = context.getString(R.string.no_translation,
+            result.setOverview(context.getString(R.string.no_translation,
                     LanguageTools.getShowLanguageStringFor(context, desiredLanguage),
-                    context.getString(R.string.tvdb));
+                    context.getString(R.string.tvdb)));
             if (!TextUtils.isEmpty(untranslatedOverview)) {
-                result.overview += "\n\n" + untranslatedOverview;
+                result.setOverview(result.getOverview().concat("\n\n" + untranslatedOverview));
             }
         } else {
-            result.overview = series.overview;
+            result.setOverview(series.overview);
         }
         try {
-            result.runtime = Integer.parseInt(series.runtime);
+            result.setRuntime(Integer.parseInt(series.runtime));
         } catch (NumberFormatException e) {
             // an hour is always a good estimate...
-            result.runtime = 60;
+            result.setRuntime(60);
         }
         String status = series.status;
         if (status != null) {
             if (status.length() == 10) {
-                result.status = ShowStatusExport.CONTINUING;
+                result.setStatus(ShowStatusExport.CONTINUING);
             } else if (status.length() == 5) {
-                result.status = ShowStatusExport.ENDED;
+                result.setStatus(ShowStatusExport.ENDED);
             } else {
-                result.status = ShowStatusExport.UNKNOWN;
+                result.setStatus(ShowStatusExport.UNKNOWN);
             }
         }
 
@@ -549,7 +558,7 @@ public class TvdbTools {
         }
 
         if (posterResponse.isSuccessful()) {
-            result.poster = getHighestRatedPoster(posterResponse.body().data);
+            result.setPoster(getHighestRatedPoster(posterResponse.body().data));
         }
 
         return result;
@@ -570,7 +579,7 @@ public class TvdbTools {
     }
 
     public retrofit2.Response<SeriesImageQueryResultResponse> getSeriesPosters(int showTvdbId,
-            @Nullable String language) throws TvdbException {
+                                                                               @Nullable String language) throws TvdbException {
         try {
             return tvdbSeries.get()
                     .imagesQuery(showTvdbId, "poster", null, null, language)
@@ -604,7 +613,7 @@ public class TvdbTools {
      * ContentHandler}.
      */
     private void downloadAndParse(ContentHandler handler, String urlString, boolean isZipFile,
-            String logTag) throws TvdbException {
+                                  String logTag) throws TvdbException {
         Request request = new Request.Builder().url(urlString).build();
 
         Response response;

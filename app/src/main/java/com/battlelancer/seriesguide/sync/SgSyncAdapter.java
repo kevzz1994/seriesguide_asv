@@ -205,7 +205,7 @@ public class SgSyncAdapter extends AbstractThreadedSyncAdapter {
             if (failed < 4) {
                 // 1, -3, -9, -27
                 int posOrNegInterval = SYNC_INTERVAL_MINIMUM_MINUTES
-                        - (int) Math.pow(2, failed + 2);
+                        - (int) Math.pow(2, (double) failed + 2);
                 fakeLastUpdateTime = currentTime - (posOrNegInterval * DateUtils.MINUTE_IN_MILLIS);
             } else {
                 fakeLastUpdateTime = currentTime;
@@ -263,7 +263,7 @@ public class SgSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         Bundle args = new Bundle();
-        args.putInt(EXTRA_SYNC_TYPE, syncType.id);
+        args.putInt(EXTRA_SYNC_TYPE, syncType.getId());
         args.putInt(EXTRA_SYNC_SHOW_TVDB_ID, showTvdbId);
 
         requestSync(context, args);
@@ -272,7 +272,7 @@ public class SgSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void requestSyncJobsImmediate(Context context) {
         Bundle args = new Bundle();
         args.putBoolean(EXTRA_SYNC_IMMEDIATE, true);
-        args.putInt(EXTRA_SYNC_TYPE, SyncType.JOBS.id);
+        args.putInt(EXTRA_SYNC_TYPE, SyncType.JOBS.getId());
 
         // ignore sync settings and backoff
         args.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -321,7 +321,7 @@ public class SgSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Bundle args = new Bundle();
         args.putBoolean(EXTRA_SYNC_IMMEDIATE, true);
-        args.putInt(EXTRA_SYNC_TYPE, syncType.id);
+        args.putInt(EXTRA_SYNC_TYPE, syncType.getId());
         args.putInt(EXTRA_SYNC_SHOW_TVDB_ID, showTvdbId);
 
         // ignore sync settings and backoff

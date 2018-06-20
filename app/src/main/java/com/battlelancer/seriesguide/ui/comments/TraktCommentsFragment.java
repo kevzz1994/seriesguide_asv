@@ -251,8 +251,8 @@ public class TraktCommentsFragment extends Fragment {
             if (!isAdded()) {
                 return;
             }
-            adapter.setData(data.results);
-            setEmptyMessage(data.emptyText);
+            adapter.setData(data.getResults());
+            setEmptyMessage(data.getEmptyText());
             showProgressBar(false);
         }
 
@@ -296,14 +296,14 @@ public class TraktCommentsFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(TraktTask.TraktActionCompleteEvent event) {
-        if (event.traktAction != TraktAction.COMMENT || getView() == null) {
+        if (event.getTraktAction() != TraktAction.COMMENT || getView() == null) {
             return;
         }
 
         // reenable the shout button
         buttonShout.setEnabled(true);
 
-        if (event.wasSuccessful) {
+        if (event.isWasSuccessful()) {
             // clear the text field and show recent shout
             editTextShout.setText("");
             refreshCommentsWithNetworkCheck();

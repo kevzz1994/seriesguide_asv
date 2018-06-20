@@ -187,51 +187,56 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
             if (backupFileUri == null) {
                 return ERROR_FILE_ACCESS;
             }
-            // ...and the file actually exists
-            ParcelFileDescriptor pfd = new ParcelFileDescriptor(null);
 
-//            try (ParcelFileDescriptor pfd2 =
-//                         context.getContentResolver().openFileDescriptor(backupFileUri, "r")) {
-//
-//
-//
-//            } catch (IOException ignored) {
-//
-//            }
+            try (ParcelFileDescriptor parcelFileDescriptor =
+                         context.getContentResolver().openFileDescriptor(backupFileUri, "r")) {
 
-            try {
-                pfd = context.getContentResolver().openFileDescriptor(backupFileUri, "r");
-            } catch (FileNotFoundException | SecurityException e) {
-                Timber.e(e, "Backup file not found.");
-                errorCause = e.getMessage();
-                return ERROR_FILE_ACCESS;
-            }
-            if (pfd == null) {
-                Timber.e("File descriptor is null.");
-                return ERROR_FILE_ACCESS;
-            }
+                if (parcelFileDescriptor == null) {
+                    Timber.e("File descriptor is null.");
+                    return ERROR_FILE_ACCESS;
+                }
 
-            clearExistingData(type);
+                clearExistingData(type);
 
-            // Access JSON from backup file and try to import data
-            FileInputStream in = new FileInputStream(pfd.getFileDescriptor());
-            try {
+                FileInputStream in = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
                 importFromJson(type, in);
 
-                // let the document provider know we're done.
-                //pfd.close();
-            } catch (JsonParseException | IOException | IllegalStateException e) {
-                // the given Json might not be valid or unreadable
+            } catch (IOException | SecurityException e) {
                 Timber.e(e, "JSON import failed");
                 errorCause = e.getMessage();
                 return ERROR;
-            } finally {
-                try {
-                    pfd.close();
-                } catch (IOException e) {
-                   Timber.e(e, "Error closing ParcelFileDescriptor");
-                }
             }
+
+//            // ...and the file actually exists
+//            ParcelFileDescriptor pfd;
+//
+//            try {
+//                pfd = context.getContentResolver().openFileDescriptor(backupFileUri, "r");
+//            } catch (FileNotFoundException | SecurityException e) {
+//                Timber.e(e, "Backup file not found.");
+//                errorCause = e.getMessage();
+//                return ERROR_FILE_ACCESS;
+//            }
+//            if (pfd == null) {
+//                Timber.e("File descriptor is null.");
+//                return ERROR_FILE_ACCESS;
+//            }
+//
+//            clearExistingData(type);
+//
+//            // Access JSON from backup file and try to import data
+//            FileInputStream in = new FileInputStream(pfd.getFileDescriptor());
+//            try {
+//                importFromJson(type, in);
+//
+//                // let the document provider know we're done.
+//                pfd.close();
+//            } catch (JsonParseException | IOException | IllegalStateException e) {
+//                // the given Json might not be valid or unreadable
+//                Timber.e(e, "JSON import failed");
+//                errorCause = e.getMessage();
+//                return ERROR;
+//            }
         } else {
             // make sure we can access the backup file
             File backupFile = null;
@@ -250,26 +255,40 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
                 return SUCCESS;
             }
 
-            FileInputStream in;
-            try {
-                in = new FileInputStream(backupFile);
+
+            try (FileInputStream fis = new FileInputStream(backupFile)) {
+                clearExistingData(type);
+                importFromJson(type, fis);
             } catch (FileNotFoundException e) {
                 Timber.e(e, "Backup file not found.");
                 errorCause = e.getMessage();
                 return ERROR_FILE_ACCESS;
-            }
-
-            clearExistingData(type);
-
-            // Access JSON from backup file and try to import data
-            try {
-                importFromJson(type, in);
             } catch (JsonParseException | IOException | IllegalStateException e) {
-                // the given Json might not be valid or unreadable
                 Timber.e(e, "JSON show import failed");
                 errorCause = e.getMessage();
                 return ERROR;
             }
+
+//            FileInputStream in;
+//            try {
+//                in = new FileInputStream(backupFile);
+//            } catch (FileNotFoundException e) {
+//                Timber.e(e, "Backup file not found.");
+//                errorCause = e.getMessage();
+//                return ERROR_FILE_ACCESS;
+//            }
+//
+//            clearExistingData(type);
+//
+//            // Access JSON from backup file and try to import data
+//            try {
+//                importFromJson(type, in);
+//            } catch (JsonParseException | IOException | IllegalStateException e) {
+//                // the given Json might not be valid or unreadable
+//                Timber.e(e, "JSON show import failed");
+//                errorCause = e.getMessage();
+//                return ERROR;
+//            }
         }
 
         return SUCCESS;
@@ -339,7 +358,7 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     private void addShowToDatabase(Show show) {
-        if (show.tvdb_id <= 0) {
+        if (show.getTvdb_id() <= 0) {
             // valid id required
             return;
         }
@@ -347,23 +366,23 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
         // reset language if it is not supported
         boolean languageSupported = false;
         for (int i = 0, size = languageCodes.length; i < size; i++) {
-            if (languageCodes[i].equals(show.language)) {
+            if (languageCodes[i].equals(show.getLanguage())) {
                 languageSupported = true;
                 break;
             }
         }
         if (!languageSupported) {
-            show.language = null;
+            show.setLanguage(null);
         }
         // ensure a show will be updated (last_updated might be far into the future)
-        if (show.last_updated > System.currentTimeMillis()) {
-            show.last_updated = 0;
+        if (show.getLast_updated() > System.currentTimeMillis()) {
+            show.setLast_updated(0);
         }
 
         ContentValues showValues = show.toContentValues(context, true);
         context.getContentResolver().insert(Shows.CONTENT_URI, showValues);
 
-        if (show.seasons == null || show.seasons.isEmpty()) {
+        if (show.getSeasons() == null || show.getSeasons().isEmpty()) {
             // no seasons (or episodes)
             return;
         }
@@ -386,28 +405,28 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
         ArrayList<ContentValues> episodeBatch = new ArrayList<>();
 
         // Populate arrays...
-        for (Season season : show.seasons) {
+        for (Season season : show.getSeasons()) {
             if (season.tvdbId <= 0) {
                 // valid id is required
                 continue;
             }
-            if (season.episodes == null || season.episodes.isEmpty()) {
+            if (season.getEpisodes() == null || season.getEpisodes().isEmpty()) {
                 // episodes required
                 continue;
             }
 
             // add the season...
-            seasonBatch.add(season.toContentValues(show.tvdb_id));
+            seasonBatch.add(season.toContentValues(show.getTvdb_id()));
 
             // ...and its episodes
-            for (Episode episode : season.episodes) {
-                if (episode.tvdbId <= 0) {
+            for (Episode episode : season.getEpisodes()) {
+                if (episode.getTvdbId() <= 0) {
                     // valid id is required
                     continue;
                 }
 
                 ContentValues episodeValues = episode
-                        .toContentValues(show.tvdb_id, season.tvdbId, season.season);
+                        .toContentValues(show.getTvdb_id(), season.tvdbId, season.getSeason());
                 episodeBatch.add(episodeValues);
             }
         }
@@ -421,30 +440,30 @@ public class JsonImportTask extends AsyncTask<Void, Integer, Integer> {
     }
 
     private void addListToDatabase(List list) {
-        if (TextUtils.isEmpty(list.name)) {
+        if (TextUtils.isEmpty(list.getName())) {
             return; // required
         }
         if (TextUtils.isEmpty(list.listId)) {
             // rebuild from name
-            list.listId = SeriesGuideContract.Lists.generateListId(list.name);
+            list.listId = SeriesGuideContract.Lists.generateListId(list.getName());
         }
 
         // Insert the list
         context.getContentResolver().insert(Lists.CONTENT_URI, list.toContentValues());
 
-        if (list.items == null || list.items.isEmpty()) {
+        if (list.getItems() == null || list.getItems().isEmpty()) {
             return;
         }
 
         // Insert the lists items
         ArrayList<ContentValues> items = new ArrayList<>();
-        for (ListItem item : list.items) {
+        for (ListItem item : list.getItems()) {
             int type;
-            if (ListItemTypesExport.SHOW.equals(item.type)) {
+            if (ListItemTypesExport.SHOW.equals(item.getType())) {
                 type = ListItemTypes.SHOW;
-            } else if (ListItemTypesExport.SEASON.equals(item.type)) {
+            } else if (ListItemTypesExport.SEASON.equals(item.getType())) {
                 type = ListItemTypes.SEASON;
-            } else if (ListItemTypesExport.EPISODE.equals(item.type)) {
+            } else if (ListItemTypesExport.EPISODE.equals(item.getType())) {
                 type = ListItemTypes.EPISODE;
             } else {
                 // Unknown item type, skip

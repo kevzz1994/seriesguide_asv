@@ -95,13 +95,13 @@ public class ListsPagerAdapter extends MultiPagerAdapter {
         }
     }
 
-    public interface ListsQuery {
-        String[] PROJECTION = new String[] {
+    public static class ListsQuery {
+        public static final String[] PROJECTION = new String[] {
                 Lists.LIST_ID,
                 Lists.NAME
         };
 
-        int ID = 0;
-        int NAME = 1;
+        static int ID = 0;
+        static int NAME = 1;
     }
 }

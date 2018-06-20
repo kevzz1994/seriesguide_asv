@@ -21,10 +21,27 @@ class SeasonEpisodesLoader extends GenericSimpleLoader<SeasonEpisodesLoader.Resu
     static class Result {
         @NonNull
         public ArrayList<Episode> episodes;
-        public int requestedEpisodeIndex;
+        private int requestedEpisodeIndex;
 
         public Result(@NonNull ArrayList<Episode> episodes, int requestedEpisodeIndex) {
             this.episodes = episodes;
+            this.requestedEpisodeIndex = requestedEpisodeIndex;
+        }
+
+        @NonNull
+        public ArrayList<Episode> getEpisodes() {
+            return episodes;
+        }
+
+        public void setEpisodes(@NonNull ArrayList<Episode> episodes) {
+            this.episodes = episodes;
+        }
+
+        public int getRequestedEpisodeIndex() {
+            return requestedEpisodeIndex;
+        }
+
+        public void setRequestedEpisodeIndex(int requestedEpisodeIndex) {
             this.requestedEpisodeIndex = requestedEpisodeIndex;
         }
     }
@@ -56,12 +73,12 @@ class SeasonEpisodesLoader extends GenericSimpleLoader<SeasonEpisodesLoader.Resu
                     requestedEpisodeIndex = i;
                 }
                 Episode episode = new Episode();
-                episode.episodeId = curEpisodeId;
-                episode.episodeNumber = episodesOfSeason.getInt(1);
+                episode.setEpisodeId(curEpisodeId);
+                episode.setEpisodeNumber(episodesOfSeason.getInt(1));
                 if (seasonNumber == null) {
                     seasonNumber = episodesOfSeason.getInt(2); // same for all
                 }
-                episode.seasonNumber = seasonNumber;
+                episode.setSeasonNumber(seasonNumber);
                 episodes.add(episode);
                 i++;
             }

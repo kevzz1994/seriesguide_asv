@@ -285,12 +285,12 @@ public class MoviesNowFragment extends Fragment {
                 return;
             }
 
-            if (item.movieTmdbId == null) {
+            if (item.getMovieTmdbId() == null) {
                 return;
             }
 
             // display movie details
-            Intent i = MovieDetailsActivity.intentMovie(getActivity(), item.movieTmdbId);
+            Intent i = MovieDetailsActivity.intentMovie(getActivity(), item.getMovieTmdbId());
 
             // simple scale up animation as there are no images
             Utils.startActivityWithAnimation(getActivity(), i, view);
@@ -311,7 +311,7 @@ public class MoviesNowFragment extends Fragment {
             if (!isAdded()) {
                 return;
             }
-            adapter.setRecentlyWatched(data.items);
+            adapter.setRecentlyWatched(data.getItems());
             isLoadingRecentlyWatched = false;
             showProgressBar(false);
             showError(data.errorText);

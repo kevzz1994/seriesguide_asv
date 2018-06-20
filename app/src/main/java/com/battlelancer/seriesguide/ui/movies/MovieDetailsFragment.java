@@ -607,7 +607,7 @@ public class MovieDetailsFragment extends Fragment implements MovieActionsContra
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ExtensionManager.MovieActionReceivedEvent event) {
-        if (event.movieTmdbId != tmdbId) {
+        if (event.getMovieTmdbId() != tmdbId) {
             return;
         }
         loadMovieActionsDelayed();
@@ -615,7 +615,7 @@ public class MovieDetailsFragment extends Fragment implements MovieActionsContra
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MovieTools.MovieChangedEvent event) {
-        if (event.movieTmdbId != tmdbId) {
+        if (event.getMovieTmdbId() != tmdbId) {
             return;
         }
         // re-query to update movie details

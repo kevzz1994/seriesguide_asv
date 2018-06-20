@@ -43,9 +43,17 @@ import timber.log.Timber;
 public class ShowTools {
 
     public static class ShowChangedEvent {
-        public int showTvdbId;
+        private int showTvdbId;
 
         public ShowChangedEvent(int showTvdbId) {
+            this.showTvdbId = showTvdbId;
+        }
+
+        public int getShowTvdbId() {
+            return showTvdbId;
+        }
+
+        public void setShowTvdbId(int showTvdbId) {
             this.showTvdbId = showTvdbId;
         }
     }

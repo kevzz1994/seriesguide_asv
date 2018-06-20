@@ -51,12 +51,12 @@ class PeopleAdapter extends ArrayAdapter<PeopleListHelper.Person> {
         }
 
         // name and description
-        viewHolder.name.setText(person.name);
-        viewHolder.description.setText(person.description);
+        viewHolder.name.setText(person.getName());
+        viewHolder.description.setText(person.getDescription());
 
         // load headshot
         ServiceUtils.loadWithPicasso(getContext(),
-                TmdbTools.buildProfileImageUrl(getContext(), person.profilePath,
+                TmdbTools.buildProfileImageUrl(getContext(), person.getProfilePath(),
                         TmdbTools.ProfileImageSize.W185))
                 .resizeDimen(R.dimen.person_headshot_size, R.dimen.person_headshot_size)
                 .centerCrop()
@@ -65,7 +65,7 @@ class PeopleAdapter extends ArrayAdapter<PeopleListHelper.Person> {
 
         // set unique transition names
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            viewHolder.headshot.setTransitionName("peopleAdapterPoster_" + person.tmdbId);
+            viewHolder.headshot.setTransitionName("peopleAdapterPoster_" + person.getTmdbId());
         }
 
         return convertView;
@@ -82,8 +82,32 @@ class PeopleAdapter extends ArrayAdapter<PeopleListHelper.Person> {
     }
 
     static class ViewHolder {
-        public TextView name;
-        public TextView description;
-        public ImageView headshot;
+        private TextView name;
+        private TextView description;
+        private ImageView headshot;
+
+        public TextView getName() {
+            return name;
+        }
+
+        public void setName(TextView name) {
+            this.name = name;
+        }
+
+        public TextView getDescription() {
+            return description;
+        }
+
+        public void setDescription(TextView description) {
+            this.description = description;
+        }
+
+        public ImageView getHeadshot() {
+            return headshot;
+        }
+
+        public void setHeadshot(ImageView headshot) {
+            this.headshot = headshot;
+        }
     }
 }

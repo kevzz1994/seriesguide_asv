@@ -226,12 +226,12 @@ public class AddShowDialogFragment extends AppCompatDialogFragment {
     };
 
     private void populateShowViews(TvdbShowLoader.Result result) {
-        Show show = result.show;
+        Show show = result.getShow();
         if (show == null) {
             // failed to load, can't be added
             if (!AndroidUtils.isNetworkConnected(getActivity())) {
                 overview.setText(R.string.offline);
-            } else if (result.doesNotExist) {
+            } else if (result.isDoesNotExist()) {
                 overview.setText(R.string.tvdb_error_does_not_exist);
             } else {
                 overview.setText(getString(R.string.api_error_generic,
@@ -240,7 +240,7 @@ public class AddShowDialogFragment extends AppCompatDialogFragment {
             }
             return;
         }
-        if (result.isAdded) {
+        if (result.isAdded()) {
             // already added, offer to open show instead
             buttonPositive.setText(R.string.action_open);
             buttonPositive.setOnClickListener(new OnClickListener() {
@@ -268,20 +268,20 @@ public class AddShowDialogFragment extends AppCompatDialogFragment {
         buttonPositive.setVisibility(View.VISIBLE);
 
         // store title for add task
-        displayedShow.setTitle(show.title);
+        displayedShow.setTitle(show.getTitle());
 
         // title, overview
-        title.setText(show.title);
-        overview.setText(show.overview);
+        title.setText(show.getTitle());
+        overview.setText(show.getOverview());
 
         // release year
         SpannableStringBuilder statusText = new SpannableStringBuilder();
-        String releaseYear = TimeTools.getShowReleaseYear(show.first_aired);
+        String releaseYear = TimeTools.getShowReleaseYear(show.getFirst_aired());
         if (releaseYear != null) {
             statusText.append(releaseYear);
         }
         // continuing/ended status
-        int encodedStatus = DataLiberationTools.encodeShowStatus(show.status);
+        int encodedStatus = DataLiberationTools.encodeShowStatus(show.getStatus());
         if (encodedStatus != ShowTools.Status.UNKNOWN) {
             String decodedStatus = ShowTools.getStatus(getActivity(), encodedStatus);
             if (decodedStatus != null) {
@@ -302,36 +302,36 @@ public class AddShowDialogFragment extends AppCompatDialogFragment {
 
         // next release day and time
         SpannableStringBuilder timeAndNetworkText = new SpannableStringBuilder();
-        if (show.release_time != -1) {
+        if (show.getRelease_time() != -1) {
             Date release = TimeTools.getShowReleaseDateTime(getActivity(),
-                    show.release_time,
-                    show.release_weekday,
-                    show.release_timezone,
-                    show.country,
-                    show.network);
+                    show.getRelease_time(),
+                    show.getRelease_weekday(),
+                    show.getRelease_timezone(),
+                    show.getCountry(),
+                    show.getNetwork());
             String day = TimeTools.formatToLocalDayOrDaily(getActivity(), release,
-                    show.release_weekday);
+                    show.getRelease_weekday());
             String time = TimeTools.formatToLocalTime(getActivity(), release);
             timeAndNetworkText.append(day).append(" ").append(time);
             timeAndNetworkText.append("\n");
         }
 
         // network, runtime
-        timeAndNetworkText.append(show.network);
+        timeAndNetworkText.append(show.getNetwork());
         timeAndNetworkText.append("\n");
         timeAndNetworkText.append(
-                getString(R.string.runtime_minutes, String.valueOf(show.runtime)));
+                getString(R.string.runtime_minutes, String.valueOf(show.getRuntime())));
 
         showmeta.setText(timeAndNetworkText);
 
         // rating
-        rating.setText(TraktTools.buildRatingString(show.rating));
+        rating.setText(TraktTools.buildRatingString(show.getRating()));
 
         // genres
-        ViewTools.setValueOrPlaceholder(genres, TextTools.splitAndKitTVDBStrings(show.genres));
+        ViewTools.setValueOrPlaceholder(genres, TextTools.splitAndKitTVDBStrings(show.getGenres()));
 
         // poster
-        TvdbImageTools.loadShowPosterFitCrop(getActivity(), poster, show.poster);
+        TvdbImageTools.loadShowPosterFitCrop(getActivity(), poster, show.getPoster());
 
         // enable adding of show, display views
         buttonPositive.setEnabled(true);

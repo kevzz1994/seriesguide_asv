@@ -30,7 +30,7 @@ class EpisodePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return EpisodeDetailsFragment.newInstance(episodes.get(position).episodeId, isMultiPane);
+        return EpisodeDetailsFragment.newInstance(episodes.get(position).getEpisodeId(), isMultiPane);
     }
 
     @Override
@@ -54,7 +54,7 @@ class EpisodePagerAdapter extends FragmentStatePagerAdapter {
     @Nullable
     Integer getItemEpisodeTvdbId(int position) {
         if (position < episodes.size()) {
-            return episodes.get(position).episodeId;
+            return episodes.get(position).getEpisodeId();
         } else {
             return null;
         }
@@ -63,7 +63,7 @@ class EpisodePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         Episode episode = episodes.get(position);
-        return TextTools.getEpisodeNumber(context, episode.seasonNumber, episode.episodeNumber);
+        return TextTools.getEpisodeNumber(context, episode.getSeasonNumber(), episode.getEpisodeNumber());
     }
 
     void updateEpisodeList(@NonNull ArrayList<Episode> list) {

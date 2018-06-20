@@ -137,6 +137,6 @@ public class TraktRatingsTask extends AsyncTask<Void, Void, Void> {
      */
     private long createUniqueId(int showTvdbId, int episodeTvdbId) {
         return ((showTvdbId + episodeTvdbId) * (showTvdbId + episodeTvdbId + 1) / 2)
-                + episodeTvdbId;
+                + (long) episodeTvdbId;
     }
 }

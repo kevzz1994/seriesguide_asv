@@ -19,10 +19,10 @@ import com.google.flatbuffers.FlatBufferBuilder;
 
 public abstract class BaseEpisodesJob extends BaseJob implements FlagJob {
 
-    public static final String[] PROJECTION_EPISODE = new String[] {
+    protected static final String[] PROJECTION_EPISODE = new String[] {
             Episodes._ID
     };
-    public static final String[] PROJECTION_SEASON_NUMBER = new String[] {
+    protected static final String[] PROJECTION_SEASON_NUMBER = new String[] {
             Episodes.SEASON,
             Episodes.NUMBER
     };

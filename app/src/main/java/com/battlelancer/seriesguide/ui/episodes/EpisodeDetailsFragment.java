@@ -312,7 +312,7 @@ public class EpisodeDetailsFragment extends Fragment implements EpisodeActionsCo
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ExtensionManager.EpisodeActionReceivedEvent event) {
-        if (getEpisodeTvdbId() == event.episodeTvdbId) {
+        if (getEpisodeTvdbId() == event.getEpisodeTvdbId()) {
             loadEpisodeActionsDelayed();
         }
     }
@@ -721,9 +721,9 @@ public class EpisodeDetailsFragment extends Fragment implements EpisodeActionsCo
                 EpisodeActionsContract.ACTION_LOADER_DELAY_MILLIS);
     }
 
-    interface DetailsQuery {
+    static class DetailsQuery {
 
-        String[] PROJECTION = new String[]{
+        static String[] PROJECTION = new String[]{
                 Tables.EPISODES + "." + Episodes._ID,
                 Episodes.NUMBER,
                 Episodes.ABSOLUTE_NUMBER,
@@ -752,31 +752,31 @@ public class EpisodeDetailsFragment extends Fragment implements EpisodeActionsCo
                 Shows.LANGUAGE
         };
 
-        int _ID = 0;
-        int NUMBER = 1;
-        int NUMBER_ABSOLUTE = 2;
-        int NUMBER_DVD = 3;
-        int SEASON_ID = 4;
-        int SEASON = 5;
-        int IMDBID = 6;
-        int TITLE = 7;
-        int OVERVIEW = 8;
-        int FIRST_RELEASE_MS = 9;
-        int DIRECTORS = 10;
-        int GUESTSTARS = 11;
-        int WRITERS = 12;
-        int IMAGE = 13;
-        int RATING_GLOBAL = 14;
-        int RATING_VOTES = 15;
-        int RATING_USER = 16;
-        int WATCHED = 17;
-        int COLLECTED = 18;
-        int LAST_EDITED = 19;
-        int LAST_UPDATED = 20;
-        int SHOW_ID = 21;
-        int SHOW_IMDBID = 22;
-        int SHOW_TITLE = 23;
-        int SHOW_RUNTIME = 24;
-        int SHOW_LANGUAGE = 25;
+        static int _ID = 0;
+        static int NUMBER = 1;
+        static int NUMBER_ABSOLUTE = 2;
+        static int NUMBER_DVD = 3;
+        static int SEASON_ID = 4;
+        static int SEASON = 5;
+        static int IMDBID = 6;
+        static int TITLE = 7;
+        static int OVERVIEW = 8;
+        static int FIRST_RELEASE_MS = 9;
+        static int DIRECTORS = 10;
+        static int GUESTSTARS = 11;
+        static int WRITERS = 12;
+        static int IMAGE = 13;
+        static int RATING_GLOBAL = 14;
+        static int RATING_VOTES = 15;
+        static int RATING_USER = 16;
+        static int WATCHED = 17;
+        static int COLLECTED = 18;
+        static int LAST_EDITED = 19;
+        static int LAST_UPDATED = 20;
+        static int SHOW_ID = 21;
+        static int SHOW_IMDBID = 22;
+        static int SHOW_TITLE = 23;
+        static int SHOW_RUNTIME = 24;
+        static int SHOW_LANGUAGE = 25;
     }
 }

@@ -519,14 +519,14 @@ public class TraktEpisodeSync {
         return seasons;
     }
 
-    private interface EpisodesQuery {
+    private static class EpisodesQuery {
 
-        String[] PROJECTION = new String[] {
+        static String[] PROJECTION = new String[] {
                 SeriesGuideContract.Episodes.SEASON, SeriesGuideContract.Episodes.NUMBER
         };
 
-        int SEASON = 0;
-        int EPISODE = 1;
+        static int SEASON = 0;
+        static int EPISODE = 1;
     }
 
     public enum Flag {

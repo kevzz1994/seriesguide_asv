@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.PopupMenu;
+
 import com.battlelancer.seriesguide.R;
 import com.battlelancer.seriesguide.SgApp;
 import com.battlelancer.seriesguide.provider.SeriesGuideContract;
@@ -27,6 +28,7 @@ import com.battlelancer.seriesguide.ui.shows.BaseShowsAdapter;
 import com.battlelancer.seriesguide.ui.shows.ShowMenuItemClickListener;
 import com.battlelancer.seriesguide.util.TabClickEvent;
 import com.battlelancer.seriesguide.util.TimeTools;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -81,7 +83,7 @@ public class ShowSearchFragment extends BaseSearchFragment {
                 String customTimeInOneHour = String.valueOf(TimeTools.getCurrentTime(getActivity())
                         + DateUtils.HOUR_IN_MILLIS);
                 return new CursorLoader(getActivity(), SeriesGuideContract.Shows.CONTENT_URI,
-                        ShowResultsAdapter.Query.PROJECTION,
+                        ShowResultsAdapter.PROJECTION,
                         SeriesGuideContract.Shows.NEXTEPISODE + "!='' AND "
                                 + SeriesGuideContract.Shows.HIDDEN + "=0 AND "
                                 + SeriesGuideContract.Shows.NEXTAIRDATEMS + "<?",
@@ -92,7 +94,7 @@ public class ShowSearchFragment extends BaseSearchFragment {
                         .appendPath(query)
                         .build();
                 return new CursorLoader(getActivity(), uri,
-                        ShowResultsAdapter.Query.PROJECTION, null, null, null);
+                        ShowResultsAdapter.PROJECTION, null, null, null);
             }
         }
 
@@ -117,18 +119,18 @@ public class ShowSearchFragment extends BaseSearchFragment {
             // show/hide some menu items depending on show properties
             Menu menu = popupMenu.getMenu();
             menu.findItem(R.id.menu_action_shows_favorites_add)
-                    .setVisible(!viewHolder.isFavorited);
+                    .setVisible(!viewHolder.isFavorited());
             menu.findItem(R.id.menu_action_shows_favorites_remove)
-                    .setVisible(viewHolder.isFavorited);
-            menu.findItem(R.id.menu_action_shows_hide).setVisible(!viewHolder.isHidden);
-            menu.findItem(R.id.menu_action_shows_unhide).setVisible(viewHolder.isHidden);
+                    .setVisible(viewHolder.isFavorited());
+            menu.findItem(R.id.menu_action_shows_hide).setVisible(!viewHolder.isHidden());
+            menu.findItem(R.id.menu_action_shows_unhide).setVisible(viewHolder.isHidden());
 
             // hide unused actions
             menu.findItem(R.id.menu_action_shows_watched_next).setVisible(false);
 
             popupMenu.setOnMenuItemClickListener(
                     new ShowMenuItemClickListener(getContext(),
-                            getFragmentManager(), viewHolder.showTvdbId, viewHolder.episodeTvdbId,
+                            getFragmentManager(), viewHolder.getShowTvdbId(), viewHolder.getEpisodeTvdbId(),
                             ListsActivity.TAG));
             popupMenu.show();
         }

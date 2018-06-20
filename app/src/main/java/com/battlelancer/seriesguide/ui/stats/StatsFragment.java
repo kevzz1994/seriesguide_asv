@@ -53,7 +53,7 @@ public class StatsFragment extends Fragment {
 
     private Unbinder unbinder;
     private StatsViewModel model;
-    private StatsLiveData.Stats currentStats;
+    public static StatsLiveData.Stats currentStats;
     private boolean hasFinalValues;
 
     @Override

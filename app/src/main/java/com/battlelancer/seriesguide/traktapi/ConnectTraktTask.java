@@ -30,10 +30,14 @@ public class ConnectTraktTask extends AsyncTask<String, Void, Integer> {
         /**
          * One of {@link com.battlelancer.seriesguide.enums.NetworkResult}.
          */
-        public int resultCode;
+        private int resultCode;
 
         FinishedEvent(int resultCode) {
             this.resultCode = resultCode;
+        }
+
+        public int getResultCode() {
+            return resultCode;
         }
     }
 
@@ -81,7 +85,7 @@ public class ConnectTraktTask extends AsyncTask<String, Void, Integer> {
         }
 
         // did we obtain all required data?
-        if (TextUtils.isEmpty(accessToken) || TextUtils.isEmpty(refreshToken) || expiresIn < 1) {
+        if (accessToken == null || refreshToken == null || expiresIn < 1) {
             return TraktResult.AUTH_ERROR;
         }
 
@@ -140,7 +144,7 @@ public class ConnectTraktTask extends AsyncTask<String, Void, Integer> {
         }
 
         // did we obtain a username (display name is not required)?
-        if (TextUtils.isEmpty(username)) {
+        if (username == null) {
             return TraktResult.API_ERROR;
         }
         TraktCredentials.get(context).storeUsername(username, displayname);

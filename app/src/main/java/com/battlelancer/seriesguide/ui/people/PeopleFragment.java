@@ -122,7 +122,7 @@ public class PeopleFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PeopleListHelper.Person person = adapter.getItem(position);
                 PeopleAdapter.ViewHolder viewHolder = (PeopleAdapter.ViewHolder) view.getTag();
-                onShowPersonListener.showPerson(viewHolder.headshot, person.tmdbId);
+                onShowPersonListener.showPerson(viewHolder.getHeadshot(), person.getTmdbId());
             }
         });
 

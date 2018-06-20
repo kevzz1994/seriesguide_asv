@@ -52,12 +52,20 @@ public class TraktTask extends AsyncTask<Void, Void, TraktTask.TraktResponse> {
      * trakt response status class.
      */
     public static class TraktResponse {
-        public boolean succesful;
-        public String message;
+        private boolean succesful;
+        private String message;
 
         public TraktResponse(boolean successful, String message) {
             this.succesful = successful;
             this.message = message;
+        }
+
+        public boolean isSuccesful() {
+            return succesful;
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 
@@ -65,7 +73,11 @@ public class TraktTask extends AsyncTask<Void, Void, TraktTask.TraktResponse> {
      * trakt checkin response status class.
      */
     public static class CheckinBlockedResponse extends TraktResponse {
-        public int waitTimeMin;
+        public int getWaitTimeMin() {
+            return waitTimeMin;
+        }
+
+        private int waitTimeMin;
 
         public CheckinBlockedResponse(int waitTimeMin) {
             super(false, null);
@@ -75,15 +87,27 @@ public class TraktTask extends AsyncTask<Void, Void, TraktTask.TraktResponse> {
 
     public static class TraktActionCompleteEvent {
 
-        public TraktAction traktAction;
-        public boolean wasSuccessful;
-        public String message;
+        private TraktAction traktAction;
+        private boolean wasSuccessful;
+        private String message;
 
         public TraktActionCompleteEvent(TraktAction traktAction, boolean wasSuccessful,
                 String message) {
             this.traktAction = traktAction;
             this.wasSuccessful = wasSuccessful;
             this.message = message;
+        }
+
+        public TraktAction getTraktAction() {
+            return traktAction;
+        }
+
+        public boolean isWasSuccessful() {
+            return wasSuccessful;
+        }
+
+        public String getMessage() {
+            return message;
         }
 
         /**
@@ -117,12 +141,28 @@ public class TraktTask extends AsyncTask<Void, Void, TraktTask.TraktResponse> {
 
     public static class TraktCheckInBlockedEvent {
 
-        public Bundle traktTaskArgs;
+        private Bundle traktTaskArgs;
 
-        public int waitMinutes;
+        private int waitMinutes;
 
         public TraktCheckInBlockedEvent(Bundle traktTaskArgs, int waitMinutes) {
             this.traktTaskArgs = traktTaskArgs;
+            this.waitMinutes = waitMinutes;
+        }
+
+        public Bundle getTraktTaskArgs() {
+            return traktTaskArgs;
+        }
+
+        public void setTraktTaskArgs(Bundle traktTaskArgs) {
+            this.traktTaskArgs = traktTaskArgs;
+        }
+
+        public int getWaitMinutes() {
+            return waitMinutes;
+        }
+
+        public void setWaitMinutes(int waitMinutes) {
             this.waitMinutes = waitMinutes;
         }
     }

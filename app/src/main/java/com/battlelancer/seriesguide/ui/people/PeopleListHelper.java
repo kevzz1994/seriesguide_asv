@@ -259,9 +259,41 @@ public class PeopleListHelper {
     }
 
     public static class Person {
-        public int tmdbId;
-        public String name;
-        public String description;
-        public String profilePath;
+        private int tmdbId;
+        private String name;
+        private String description;
+        private String profilePath;
+
+        public int getTmdbId() {
+            return tmdbId;
+        }
+
+        public void setTmdbId(int tmdbId) {
+            this.tmdbId = tmdbId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getProfilePath() {
+            return profilePath;
+        }
+
+        public void setProfilePath(String profilePath) {
+            this.profilePath = profilePath;
+        }
     }
 }

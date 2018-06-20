@@ -50,11 +50,11 @@ public class ProviderTest {
 
     static {
         SHOW = new Show();
-        SHOW.tvdb_id = 12;
+        SHOW.setTvdb_id(12);
 
         SEASON = new Season();
         SEASON.tvdbId = 1234;
-        SEASON.season = 42;
+        SEASON.setSeason(42);
 
         EPISODE = new Episode();
         EPISODE.id = 123456;
@@ -63,8 +63,8 @@ public class ProviderTest {
         EPISODE_I.tvdbId = EPISODE.id;
 
         LIST = new List();
-        LIST.name = "Test List";
-        LIST.listId = SeriesGuideContract.Lists.generateListId(LIST.name);
+        LIST.setName("Test List");
+        LIST.listId = SeriesGuideContract.Lists.generateListId(LIST.getName());
 
         MOVIE = new MovieDetails();
         Movie tmdbMovie = new Movie();
@@ -96,7 +96,7 @@ public class ProviderTest {
         assertEquals(1, query.getCount());
         assertTrue(query.moveToFirst());
 
-        assertEquals(SHOW.tvdb_id, query.getInt(query.getColumnIndexOrThrow(Shows._ID)));
+        assertEquals(SHOW.getTvdb_id(), query.getInt(query.getColumnIndexOrThrow(Shows._ID)));
         assertNotNullValue(query, Shows.TITLE);
         assertNotNullValue(query, Shows.TITLE);
         assertNotNullValue(query, Shows.OVERVIEW);
@@ -129,13 +129,13 @@ public class ProviderTest {
     @Test
     public void seasonDefaultValues() throws Exception {
         ContentProviderOperation op = DBUtils
-                .buildSeasonOp(SHOW.tvdb_id, SEASON.tvdbId, SEASON.season, true);
+                .buildSeasonOp(SHOW.getTvdb_id(), SEASON.tvdbId, SEASON.getSeason(), true);
         insertAndAssertSeason(op);
     }
 
     @Test
     public void seasonDefaultValuesImport() throws Exception {
-        ContentValues values = SEASON.toContentValues(SHOW.tvdb_id);
+        ContentValues values = SEASON.toContentValues(SHOW.getTvdb_id());
 
         ContentProviderOperation op = ContentProviderOperation.newInsert(Seasons.CONTENT_URI)
                 .withValues(values).build();
@@ -157,8 +157,8 @@ public class ProviderTest {
         assertTrue(query.moveToFirst());
 
         assertEquals(SEASON.tvdbId, query.getInt(query.getColumnIndexOrThrow(Seasons._ID)));
-        assertEquals(SHOW.tvdb_id, query.getInt(query.getColumnIndexOrThrow(Shows.REF_SHOW_ID)));
-        assertEquals(SEASON.season, query.getInt(query.getColumnIndexOrThrow(Seasons.COMBINED)));
+        assertEquals(SHOW.getTvdb_id(), query.getInt(query.getColumnIndexOrThrow(Shows.REF_SHOW_ID)));
+        assertEquals(SEASON.getSeason(), query.getInt(query.getColumnIndexOrThrow(Seasons.COMBINED)));
         // getInt returns 0 if NULL, so check explicitly
         assertDefaultValue(query, Seasons.WATCHCOUNT, 0);
         assertDefaultValue(query, Seasons.UNAIREDCOUNT, 0);
@@ -172,7 +172,7 @@ public class ProviderTest {
     public void episodeDefaultValues() throws Exception {
         ContentValues values = new ContentValues();
         TvdbEpisodeTools.toContentValues(EPISODE, values,
-                EPISODE.id, 1234, SHOW.tvdb_id, 0,
+                EPISODE.id, 1234, SHOW.getTvdb_id(), 0,
                 Constants.EPISODE_UNKNOWN_RELEASE);
 
         insertAndAssertEpisode(values);
@@ -180,7 +180,7 @@ public class ProviderTest {
 
     @Test
     public void episodeDefaultValuesImport() throws Exception {
-        ContentValues values = EPISODE_I.toContentValues(SHOW.tvdb_id, 1234, 0);
+        ContentValues values = EPISODE_I.toContentValues(SHOW.getTvdb_id(), 1234, 0);
 
         insertAndAssertEpisode(values);
     }
@@ -217,7 +217,7 @@ public class ProviderTest {
     @Test
     public void listDefaultValues() throws Exception {
         AddListTask addListTask = new AddListTask(InstrumentationRegistry.getTargetContext(),
-                LIST.name);
+                LIST.getName());
         addListTask.doDatabaseUpdate(providerRule.getResolver(), addListTask.getListId());
 
         Cursor query = providerRule.getResolver().query(Lists.CONTENT_URI, null,

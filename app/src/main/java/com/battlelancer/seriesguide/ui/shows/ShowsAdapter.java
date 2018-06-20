@@ -20,6 +20,40 @@ import java.util.Date;
  */
 class ShowsAdapter extends BaseShowsAdapter {
 
+    protected static final String[] PROJECTION = {
+            BaseColumns._ID, // 0
+            SeriesGuideContract.Shows.TITLE,
+            SeriesGuideContract.Shows.RELEASE_TIME,
+            SeriesGuideContract.Shows.RELEASE_WEEKDAY,
+            SeriesGuideContract.Shows.RELEASE_TIMEZONE,
+            SeriesGuideContract.Shows.RELEASE_COUNTRY, // 5
+            SeriesGuideContract.Shows.NETWORK,
+            SeriesGuideContract.Shows.POSTER,
+            SeriesGuideContract.Shows.STATUS,
+            SeriesGuideContract.Shows.NEXTEPISODE,
+            SeriesGuideContract.Shows.NEXTTEXT, // 10
+            SeriesGuideContract.Shows.NEXTAIRDATEMS,
+            SeriesGuideContract.Shows.FAVORITE,
+            SeriesGuideContract.Shows.HIDDEN,
+            SeriesGuideContract.Shows.UNWATCHED_COUNT // 14
+    };
+
+    int _ID = 0;
+    int TITLE = 1;
+    int RELEASE_TIME = 2;
+    int RELEASE_WEEKDAY = 3;
+    int RELEASE_TIMEZONE = 4;
+    int RELEASE_COUNTRY = 5;
+    int NETWORK = 6;
+    int POSTER = 7;
+    int STATUS = 8;
+    int NEXTEPISODE = 9;
+    int NEXTTEXT = 10;
+    int NEXTAIRDATEMS = 11;
+    int FAVORITE = 12;
+    int HIDDEN = 13;
+    int UNWATCHED_COUNT = 14;
+
     ShowsAdapter(Activity activity, OnItemClickListener listener) {
         super(activity, listener);
     }
@@ -28,20 +62,20 @@ class ShowsAdapter extends BaseShowsAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ShowViewHolder viewHolder = (ShowViewHolder) view.getTag();
 
-        viewHolder.showTvdbId = cursor.getInt(Query._ID);
-        viewHolder.isFavorited = cursor.getInt(Query.FAVORITE) == 1;
+        viewHolder.setShowTvdbId(cursor.getInt(_ID));
+        viewHolder.setFavorited(cursor.getInt(FAVORITE) == 1);
 
         // set text properties immediately
-        viewHolder.name.setText(cursor.getString(Query.TITLE));
+        viewHolder.getName().setText(cursor.getString(TITLE));
 
         // favorite label
-        setFavoriteState(viewHolder.favorited, viewHolder.isFavorited);
+        setFavoriteState(viewHolder.getFavorited(), viewHolder.isFavorited());
 
-        int weekDay = cursor.getInt(Query.RELEASE_WEEKDAY);
-        int time = cursor.getInt(Query.RELEASE_TIME);
-        String timeZone = cursor.getString(Query.RELEASE_TIMEZONE);
-        String country = cursor.getString(Query.RELEASE_COUNTRY);
-        String network = cursor.getString(Query.NETWORK);
+        int weekDay = cursor.getInt(RELEASE_WEEKDAY);
+        int time = cursor.getInt(RELEASE_TIME);
+        String timeZone = cursor.getString(RELEASE_TIMEZONE);
+        String country = cursor.getString(RELEASE_COUNTRY);
+        String network = cursor.getString(NETWORK);
         Date releaseTimeShow;
         if (time != -1) {
             releaseTimeShow = TimeTools.getShowReleaseDateTime(context, time, weekDay, timeZone,
@@ -51,80 +85,43 @@ class ShowsAdapter extends BaseShowsAdapter {
         }
 
         // next episode info
-        String fieldValue = cursor.getString(Query.NEXTTEXT);
+        String fieldValue = cursor.getString(NEXTTEXT);
         if (TextUtils.isEmpty(fieldValue)) {
             // display show status if there is no next episode
-            viewHolder.episodeTime.setText(
-                    ShowTools.getStatus(context, cursor.getInt(Query.STATUS)));
-            viewHolder.episode.setText("");
+            viewHolder.getEpisodeTime().setText(
+                    ShowTools.getStatus(context, cursor.getInt(STATUS)));
+            viewHolder.getEpisode().setText("");
         } else {
-            viewHolder.episode.setText(fieldValue);
+            viewHolder.getEpisode().setText(fieldValue);
 
             Date releaseTimeEpisode = TimeTools.applyUserOffset(context,
-                    cursor.getLong(Query.NEXTAIRDATEMS));
+                    cursor.getLong(NEXTAIRDATEMS));
             boolean displayExactDate = DisplaySettings.isDisplayExactDate(context);
             String dateTime = displayExactDate ?
                     TimeTools.formatToLocalDateShort(context, releaseTimeEpisode)
                     : TimeTools.formatToLocalRelativeTime(context, releaseTimeEpisode);
             if (TimeTools.isSameWeekDay(releaseTimeEpisode, releaseTimeShow, weekDay)) {
                 // just display date
-                viewHolder.episodeTime.setText(dateTime);
+                viewHolder.getEpisodeTime().setText(dateTime);
             } else {
                 // display date and explicitly day
-                viewHolder.episodeTime.setText(context.getString(R.string.format_date_and_day,
+                viewHolder.getEpisodeTime().setText(context.getString(R.string.format_date_and_day,
                         dateTime, TimeTools.formatToLocalDay(releaseTimeEpisode)));
             }
         }
 
-        setRemainingCount(viewHolder.remainingCount, cursor.getInt(Query.UNWATCHED_COUNT));
+        setRemainingCount(viewHolder.getRemainingCount(), cursor.getInt(UNWATCHED_COUNT));
 
         // network, day and time
-        viewHolder.timeAndNetwork.setText(
+        viewHolder.getTimeAndNetwork().setText(
                 TextTools.networkAndTime(context, releaseTimeShow, weekDay, network));
 
         // set poster
-        TvdbImageTools.loadShowPosterResizeCrop(context, viewHolder.poster,
-                cursor.getString(Query.POSTER));
+        TvdbImageTools.loadShowPosterResizeCrop(context, viewHolder.getPoster(),
+                cursor.getString(POSTER));
 
         // context menu
-        viewHolder.isHidden = DBUtils.restoreBooleanFromInt(cursor.getInt(Query.HIDDEN));
-        viewHolder.episodeTvdbId = cursor.getInt(Query.NEXTEPISODE);
-    }
-
-    interface Query {
-
-        String[] PROJECTION = {
-                BaseColumns._ID, // 0
-                SeriesGuideContract.Shows.TITLE,
-                SeriesGuideContract.Shows.RELEASE_TIME,
-                SeriesGuideContract.Shows.RELEASE_WEEKDAY,
-                SeriesGuideContract.Shows.RELEASE_TIMEZONE,
-                SeriesGuideContract.Shows.RELEASE_COUNTRY, // 5
-                SeriesGuideContract.Shows.NETWORK,
-                SeriesGuideContract.Shows.POSTER,
-                SeriesGuideContract.Shows.STATUS,
-                SeriesGuideContract.Shows.NEXTEPISODE,
-                SeriesGuideContract.Shows.NEXTTEXT, // 10
-                SeriesGuideContract.Shows.NEXTAIRDATEMS,
-                SeriesGuideContract.Shows.FAVORITE,
-                SeriesGuideContract.Shows.HIDDEN,
-                SeriesGuideContract.Shows.UNWATCHED_COUNT // 14
-        };
-
-        int _ID = 0;
-        int TITLE = 1;
-        int RELEASE_TIME = 2;
-        int RELEASE_WEEKDAY = 3;
-        int RELEASE_TIMEZONE = 4;
-        int RELEASE_COUNTRY = 5;
-        int NETWORK = 6;
-        int POSTER = 7;
-        int STATUS = 8;
-        int NEXTEPISODE = 9;
-        int NEXTTEXT = 10;
-        int NEXTAIRDATEMS = 11;
-        int FAVORITE = 12;
-        int HIDDEN = 13;
-        int UNWATCHED_COUNT = 14;
+        viewHolder.setHidden(DBUtils.restoreBooleanFromInt(cursor.getInt(HIDDEN)));
+        viewHolder.setEpisodeTvdbId(cursor.getInt(NEXTEPISODE));
     }
 }

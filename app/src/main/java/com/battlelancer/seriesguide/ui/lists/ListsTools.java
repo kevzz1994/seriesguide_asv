@@ -25,23 +25,23 @@ public class ListsTools {
 
     private static final String[] SELECTION_ARG = new String[1];
 
-    public interface Query {
-        String[] PROJECTION_LIST_ID = new String[] {
+    public static class Query {
+        static String[] PROJECTION_LIST_ID = new String[] {
                 SeriesGuideContract.Lists.LIST_ID
         };
-        String[] PROJECTION_LIST = new String[] {
+        public static final String[] PROJECTION_LIST = new String[] {
                 SeriesGuideContract.Lists.LIST_ID,
                 SeriesGuideContract.Lists.NAME,
                 SeriesGuideContract.Lists.ORDER
         };
-        int LIST_ID = 0;
-        int NAME = 1;
-        int ORDER = 2;
+        public static final int LIST_ID = 0;
+        public static final int NAME = 1;
+        public static final int ORDER = 2;
 
-        String[] PROJECTION_LIST_ITEMS = new String[] {
+        static final String[] PROJECTION_LIST_ITEMS = new String[] {
                 SeriesGuideContract.ListItems.LIST_ITEM_ID
         };
-        int LIST_ITEM_ID = 0;
+        public static final int LIST_ITEM_ID = 0;
     }
 
     private ListsTools() {

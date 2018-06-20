@@ -21,6 +21,28 @@ public class EpisodeActionsLoader extends GenericSimpleLoader<List<Action>> {
     private final int episodeTvdbId;
     private Cursor query;
 
+    private String[] PROJECTION = {
+            Episodes.TITLE,
+            Episodes.NUMBER,
+            Episodes.ABSOLUTE_NUMBER,
+            Episodes.SEASON,
+            Episodes.IMDBID,
+            Shows.REF_SHOW_ID,
+            Shows.TITLE,
+            Shows.IMDBID,
+            Shows.FIRST_RELEASE
+    };
+
+    private int TITLE = 0;
+    private int NUMBER = 1;
+    private int NUMBER_ABSOLUTE = 2;
+    private int SEASON = 3;
+    private int IMDB_ID = 4;
+    private int SHOW_TVDB_ID = 5;
+    private int SHOW_TITLE = 6;
+    private int SHOW_IMDB_ID = 7;
+    private int SHOW_FIRST_RELEASE = 8;
+
     public EpisodeActionsLoader(Context context, int episodeTvdbId) {
         super(context);
         this.episodeTvdbId = episodeTvdbId;
@@ -37,26 +59,26 @@ public class EpisodeActionsLoader extends GenericSimpleLoader<List<Action>> {
 
             query = getContext().getContentResolver().query(
                     Episodes.buildEpisodeWithShowUri(episodeTvdbId),
-                    Query.PROJECTION, null, null, null);
+                    PROJECTION, null, null, null);
             if (query == null) {
                 return actions;
             }
 
             Episode episode = null;
             if (query.moveToFirst()) {
-                int number = query.getInt(Query.NUMBER);
+                int number = query.getInt(NUMBER);
                 episode = new Episode.Builder()
                         .tvdbId(episodeTvdbId)
-                        .title(TextTools.getEpisodeTitle(getContext(), query.getString(Query.TITLE),
+                        .title(TextTools.getEpisodeTitle(getContext(), query.getString(TITLE),
                                 number))
                         .number(number)
-                        .numberAbsolute(query.getInt(Query.NUMBER_ABSOLUTE))
-                        .season(query.getInt(Query.SEASON))
-                        .imdbId(query.getString(Query.IMDB_ID))
-                        .showTvdbId(query.getInt(Query.SHOW_TVDB_ID))
-                        .showTitle(query.getString(Query.SHOW_TITLE))
-                        .showImdbId(query.getString(Query.SHOW_IMDB_ID))
-                        .showFirstReleaseDate(query.getString(Query.SHOW_FIRST_RELEASE))
+                        .numberAbsolute(query.getInt(NUMBER_ABSOLUTE))
+                        .season(query.getInt(SEASON))
+                        .imdbId(query.getString(IMDB_ID))
+                        .showTvdbId(query.getInt(SHOW_TVDB_ID))
+                        .showTitle(query.getString(SHOW_TITLE))
+                        .showImdbId(query.getString(SHOW_IMDB_ID))
+                        .showFirstReleaseDate(query.getString(SHOW_FIRST_RELEASE))
                         .build();
             }
             // clean up query first
@@ -77,29 +99,5 @@ public class EpisodeActionsLoader extends GenericSimpleLoader<List<Action>> {
         if (query != null && !query.isClosed()) {
             query.close();
         }
-    }
-
-    private interface Query {
-        String[] PROJECTION = {
-                Episodes.TITLE,
-                Episodes.NUMBER,
-                Episodes.ABSOLUTE_NUMBER,
-                Episodes.SEASON,
-                Episodes.IMDBID,
-                Shows.REF_SHOW_ID,
-                Shows.TITLE,
-                Shows.IMDBID,
-                Shows.FIRST_RELEASE
-        };
-
-        int TITLE = 0;
-        int NUMBER = 1;
-        int NUMBER_ABSOLUTE = 2;
-        int SEASON = 3;
-        int IMDB_ID = 4;
-        int SHOW_TVDB_ID = 5;
-        int SHOW_TITLE = 6;
-        int SHOW_IMDB_ID = 7;
-        int SHOW_FIRST_RELEASE = 8;
     }
 }

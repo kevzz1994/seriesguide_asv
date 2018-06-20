@@ -61,7 +61,15 @@ public class NowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class MoreViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        private TextView title;
+
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
 
         public MoreViewHolder(View itemView, final ItemClickListener listener) {
             super(itemView);
@@ -80,7 +88,15 @@ public class NowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        private TextView title;
+
+        public TextView getTitle() {
+            return title;
+        }
+
+        public void setTitle(TextView title) {
+            this.title = title;
+        }
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -115,17 +131,17 @@ public class NowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<NowItem> friendsRecently;
 
     public static class NowItem {
-        public Integer episodeTvdbId;
-        public Integer showTvdbId;
-        public Integer movieTmdbId;
-        public long timestamp;
-        public String title;
-        public String description;
-        public String network;
-        public String tvdbPosterUrl;
-        public String username;
-        public String avatar;
-        public String action;
+        private Integer episodeTvdbId;
+        private Integer showTvdbId;
+        private Integer movieTmdbId;
+        private long timestamp;
+        private String title;
+        private String description;
+        private String network;
+        private String tvdbPosterUrl;
+        private String username;
+        private String avatar;
+        private String action;
         @ItemType public int type;
 
         public NowItem recentlyWatchedLocal() {
@@ -177,6 +193,94 @@ public class NowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.type = ItemType.HEADER;
             this.title = title;
             return this;
+        }
+
+        public Integer getEpisodeTvdbId() {
+            return episodeTvdbId;
+        }
+
+        public void setEpisodeTvdbId(Integer episodeTvdbId) {
+            this.episodeTvdbId = episodeTvdbId;
+        }
+
+        public Integer getShowTvdbId() {
+            return showTvdbId;
+        }
+
+        public void setShowTvdbId(Integer showTvdbId) {
+            this.showTvdbId = showTvdbId;
+        }
+
+        public Integer getMovieTmdbId() {
+            return movieTmdbId;
+        }
+
+        public void setMovieTmdbId(Integer movieTmdbId) {
+            this.movieTmdbId = movieTmdbId;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(long timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getNetwork() {
+            return network;
+        }
+
+        public void setNetwork(String network) {
+            this.network = network;
+        }
+
+        public String getTvdbPosterUrl() {
+            return tvdbPosterUrl;
+        }
+
+        public void setTvdbPosterUrl(String tvdbPosterUrl) {
+            this.tvdbPosterUrl = tvdbPosterUrl;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction(String action) {
+            this.action = action;
         }
     }
 

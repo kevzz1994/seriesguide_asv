@@ -69,6 +69,55 @@ import timber.log.Timber;
  */
 public class ShowFragment extends Fragment {
 
+    String[] PROJECTION = new String[]{
+            Shows._ID,
+            Shows.TITLE,
+            Shows.STATUS,
+            Shows.RELEASE_TIME,
+            Shows.RELEASE_WEEKDAY,
+            Shows.RELEASE_TIMEZONE,
+            Shows.RELEASE_COUNTRY,
+            Shows.NETWORK,
+            Shows.POSTER,
+            Shows.IMDBID,
+            Shows.RUNTIME,
+            Shows.FAVORITE,
+            Shows.OVERVIEW,
+            Shows.FIRST_RELEASE,
+            Shows.CONTENTRATING,
+            Shows.GENRES,
+            Shows.RATING_GLOBAL,
+            Shows.RATING_VOTES,
+            Shows.RATING_USER,
+            Shows.LASTEDIT,
+            Shows.LANGUAGE,
+            Shows.NOTIFY,
+            Shows.HIDDEN
+    };
+
+    int TITLE = 1;
+    int STATUS = 2;
+    int RELEASE_TIME = 3;
+    int RELEASE_WEEKDAY = 4;
+    int RELEASE_TIMEZONE = 5;
+    int RELEASE_COUNTRY = 6;
+    int NETWORK = 7;
+    int POSTER = 8;
+    int IMDBID = 9;
+    int RUNTIME = 10;
+    int IS_FAVORITE = 11;
+    int OVERVIEW = 12;
+    int FIRST_RELEASE = 13;
+    int CONTENT_RATING = 14;
+    int GENRES = 15;
+    int RATING_GLOBAL = 16;
+    int RATING_VOTES = 17;
+    int RATING_USER = 18;
+    int LAST_EDIT_MS = 19;
+    int LANGUAGE = 20;
+    int NOTIFY = 21;
+    int HIDDEN = 22;
+
     public interface InitBundle {
 
         String SHOW_TVDBID = "tvdbid";
@@ -248,63 +297,11 @@ public class ShowFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    interface ShowQuery {
-
-        String[] PROJECTION = new String[]{
-                Shows._ID,
-                Shows.TITLE,
-                Shows.STATUS,
-                Shows.RELEASE_TIME,
-                Shows.RELEASE_WEEKDAY,
-                Shows.RELEASE_TIMEZONE,
-                Shows.RELEASE_COUNTRY,
-                Shows.NETWORK,
-                Shows.POSTER,
-                Shows.IMDBID,
-                Shows.RUNTIME,
-                Shows.FAVORITE,
-                Shows.OVERVIEW,
-                Shows.FIRST_RELEASE,
-                Shows.CONTENTRATING,
-                Shows.GENRES,
-                Shows.RATING_GLOBAL,
-                Shows.RATING_VOTES,
-                Shows.RATING_USER,
-                Shows.LASTEDIT,
-                Shows.LANGUAGE,
-                Shows.NOTIFY,
-                Shows.HIDDEN
-        };
-
-        int TITLE = 1;
-        int STATUS = 2;
-        int RELEASE_TIME = 3;
-        int RELEASE_WEEKDAY = 4;
-        int RELEASE_TIMEZONE = 5;
-        int RELEASE_COUNTRY = 6;
-        int NETWORK = 7;
-        int POSTER = 8;
-        int IMDBID = 9;
-        int RUNTIME = 10;
-        int IS_FAVORITE = 11;
-        int OVERVIEW = 12;
-        int FIRST_RELEASE = 13;
-        int CONTENT_RATING = 14;
-        int GENRES = 15;
-        int RATING_GLOBAL = 16;
-        int RATING_VOTES = 17;
-        int RATING_USER = 18;
-        int LAST_EDIT_MS = 19;
-        int LANGUAGE = 20;
-        int NOTIFY = 21;
-        int HIDDEN = 22;
-    }
-
     private LoaderCallbacks<Cursor> showLoaderCallbacks = new LoaderCallbacks<Cursor>() {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             return new CursorLoader(getActivity(), Shows.buildShowUri(getShowTvdbId()),
-                    ShowQuery.PROJECTION, null, null, null);
+                    PROJECTION, null, null, null);
         }
 
         @Override
@@ -330,22 +327,22 @@ public class ShowFragment extends Fragment {
         }
 
         // title
-        showTitle = showCursor.getString(ShowQuery.TITLE);
-        posterPath = showCursor.getString(ShowQuery.POSTER);
+        showTitle = showCursor.getString(TITLE);
+        posterPath = showCursor.getString(POSTER);
 
         // status
-        ShowTools.setStatusAndColor(textViewStatus, showCursor.getInt(ShowQuery.STATUS));
+        ShowTools.setStatusAndColor(textViewStatus, showCursor.getInt(STATUS));
 
         // next release day and time
-        String releaseCountry = showCursor.getString(ShowQuery.RELEASE_COUNTRY);
-        int releaseTime = showCursor.getInt(ShowQuery.RELEASE_TIME);
-        String network = showCursor.getString(ShowQuery.NETWORK);
+        String releaseCountry = showCursor.getString(RELEASE_COUNTRY);
+        int releaseTime = showCursor.getInt(RELEASE_TIME);
+        String network = showCursor.getString(NETWORK);
         if (releaseTime != -1) {
-            int weekDay = showCursor.getInt(ShowQuery.RELEASE_WEEKDAY);
+            int weekDay = showCursor.getInt(RELEASE_WEEKDAY);
             Date release = TimeTools.getShowReleaseDateTime(getActivity(),
                     releaseTime,
                     weekDay,
-                    showCursor.getString(ShowQuery.RELEASE_TIMEZONE),
+                    showCursor.getString(RELEASE_TIMEZONE),
                     releaseCountry, network);
             String dayString = TimeTools.formatToLocalDayOrDaily(getActivity(), release, weekDay);
             String timeString = TimeTools.formatToLocalTime(getActivity(), release);
@@ -356,13 +353,13 @@ public class ShowFragment extends Fragment {
 
         // runtime
         textViewRuntime.setText(getString(R.string.runtime_minutes,
-                String.valueOf(showCursor.getInt(ShowQuery.RUNTIME))));
+                String.valueOf(showCursor.getInt(RUNTIME))));
 
         // network
         textViewNetwork.setText(network);
 
         // favorite button
-        final boolean isFavorite = showCursor.getInt(ShowQuery.IS_FAVORITE) == 1;
+        final boolean isFavorite = showCursor.getInt(IS_FAVORITE) == 1;
         ViewTools.setVectorIconTop(getActivity().getTheme(), buttonFavorite, isFavorite
                 ? R.drawable.ic_star_black_24dp
                 : R.drawable.ic_star_border_black_24dp);
@@ -381,7 +378,7 @@ public class ShowFragment extends Fragment {
         });
 
         // notifications button
-        final boolean notify = showCursor.getInt(ShowQuery.NOTIFY) == 1;
+        final boolean notify = showCursor.getInt(NOTIFY) == 1;
         buttonNotify.setContentDescription(getString(notify
                 ? R.string.action_episode_notifications_off
                 : R.string.action_episode_notifications_on));
@@ -403,7 +400,7 @@ public class ShowFragment extends Fragment {
         });
 
         // hidden button
-        final boolean isHidden = showCursor.getInt(ShowQuery.HIDDEN) == 1;
+        final boolean isHidden = showCursor.getInt(HIDDEN) == 1;
         String label = getString(isHidden ? R.string.context_unhide : R.string.context_hide);
         buttonHidden.setContentDescription(label);
         buttonHidden.setText(label);
@@ -422,15 +419,15 @@ public class ShowFragment extends Fragment {
         });
 
         // overview
-        String overview = showCursor.getString(ShowQuery.OVERVIEW);
-        String languageCode = showCursor.getString(ShowQuery.LANGUAGE);
+        String overview = showCursor.getString(OVERVIEW);
+        String languageCode = showCursor.getString(LANGUAGE);
         if (TextUtils.isEmpty(overview)) {
             // no description available, show no translation available message
             overview = getString(R.string.no_translation,
                     LanguageTools.getShowLanguageStringFor(getContext(),
                             languageCode), getString(R.string.tvdb));
         }
-        long lastEditSeconds = showCursor.getLong(ShowQuery.LAST_EDIT_MS);
+        long lastEditSeconds = showCursor.getLong(LAST_EDIT_MS);
         textViewOverview.setText(TextTools.textWithTvdbSource(textViewOverview.getContext(),
                 overview, lastEditSeconds));
 
@@ -447,29 +444,29 @@ public class ShowFragment extends Fragment {
         textViewReleaseCountry.setText(TimeTools.getCountry(getActivity(), releaseCountry));
 
         // original release
-        String firstRelease = showCursor.getString(ShowQuery.FIRST_RELEASE);
+        String firstRelease = showCursor.getString(FIRST_RELEASE);
         ViewTools.setValueOrPlaceholder(textViewFirstRelease,
                 TimeTools.getShowReleaseYear(firstRelease));
 
         // content rating
         ViewTools.setValueOrPlaceholder(textViewContentRating,
-                showCursor.getString(ShowQuery.CONTENT_RATING));
+                showCursor.getString(CONTENT_RATING));
         // genres
         ViewTools.setValueOrPlaceholder(textViewGenres,
-                TextTools.splitAndKitTVDBStrings(showCursor.getString(ShowQuery.GENRES)));
+                TextTools.splitAndKitTVDBStrings(showCursor.getString(GENRES)));
 
         // trakt rating
         textViewRating.setText(TraktTools.buildRatingString(
-                showCursor.getDouble(ShowQuery.RATING_GLOBAL)));
+                showCursor.getDouble(RATING_GLOBAL)));
         textViewRatingVotes.setText(TraktTools.buildRatingVotesString(getActivity(),
-                showCursor.getInt(ShowQuery.RATING_VOTES)));
+                showCursor.getInt(RATING_VOTES)));
 
         // user rating
         textViewRatingUser.setText(TraktTools.buildUserRatingString(getActivity(),
-                showCursor.getInt(ShowQuery.RATING_USER)));
+                showCursor.getInt(RATING_USER)));
 
         // IMDb button
-        String imdbId = showCursor.getString(ShowQuery.IMDBID);
+        String imdbId = showCursor.getString(IMDBID);
         ServiceUtils.setUpImdbButton(imdbId, buttonImdb, TAG);
 
         // TVDb button

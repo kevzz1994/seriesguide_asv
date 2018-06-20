@@ -34,7 +34,7 @@ public class TraktRecentEpisodeHistoryLoader
     protected static final int MAX_HISTORY_SIZE = 25;
 
     public static class Result {
-        public List<NowAdapter.NowItem> items;
+        private List<NowAdapter.NowItem> items;
         @Nullable public String errorText;
 
         public Result(List<NowAdapter.NowItem> items) {
@@ -44,6 +44,14 @@ public class TraktRecentEpisodeHistoryLoader
         public Result(List<NowAdapter.NowItem> items, @Nullable String errorText) {
             this.items = items;
             this.errorText = errorText;
+        }
+
+        public List<NowAdapter.NowItem> getItems() {
+            return items;
+        }
+
+        public void setItems(List<NowAdapter.NowItem> items) {
+            this.items = items;
         }
     }
 

@@ -117,7 +117,7 @@ public class MovieLocalizationDialogFragment extends AppCompatDialogFragment {
                                 });
                         EventBus.getDefault().postSticky(new ItemsLoadedEvent(items, 0));
                     }
-                }).run();
+                }).start();
             }
         });
         buttonRegion.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +148,7 @@ public class MovieLocalizationDialogFragment extends AppCompatDialogFragment {
                                 });
                         EventBus.getDefault().postSticky(new ItemsLoadedEvent(items, 1));
                     }
-                }).run();
+                }).start();
             }
         });
 
