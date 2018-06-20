@@ -6,15 +6,15 @@ sudo: required
 #licenses:
 #  - '.+'
 #
-#env:
-#  global:
-#    - MALLOC_ARENA_MAX=2
-#    - ANDROID_API_LEVEL=27
-#    - EMULATOR_API_LEVEL=23
-#    - ANDROID_BUILD_TOOLS_VERSION=27.0.1
-#    - ANDROID_ABI=armeabi-v7a
-#    - ANDROID_TAG=google_apis
-#    - ADB_INSTALL_TIMEOUT=20
+env:
+  global:
+    - MALLOC_ARENA_MAX=2
+    - ANDROID_API_LEVEL=27
+    - EMULATOR_API_LEVEL=23
+    - ANDROID_BUILD_TOOLS_VERSION=27.0.1
+    - ANDROID_ABI=armeabi-v7a
+    - ANDROID_TAG=google_apis
+    - ADB_INSTALL_TIMEOUT=20
 #
 #addons:
 #  apt:
