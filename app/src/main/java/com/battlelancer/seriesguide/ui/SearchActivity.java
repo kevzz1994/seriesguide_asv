@@ -75,6 +75,10 @@ public class SearchActivity extends BaseNavDrawerActivity implements
     @BindView(R.id.tabsSearch) SlidingTabLayout tabs;
     @BindView(R.id.pagerSearch) ViewPager viewPager;
 
+    public AutoCompleteTextView getSearchView() {
+        return searchView;
+    }
+
     private SearchHistory searchHistory;
     private ArrayAdapter<String> searchHistoryAdapter;
     private boolean tvdbSearchVisible;
@@ -391,7 +395,7 @@ public class SearchActivity extends BaseNavDrawerActivity implements
         EventBus.getDefault().postSticky(new SearchQueryEvent(args));
     }
 
-    private void triggerTvdbSearch() {
+    public void triggerTvdbSearch() {
         if (tvdbSearchVisible) {
             searchView.dismissDropDown();
             // extract and post query

@@ -37,6 +37,10 @@ public class MoviesSearchActivity extends BaseNavDrawerActivity implements
     @BindView(R.id.imageButtonSearchClear) View clearButton;
     @BindView(R.id.containerMoviesSearchFragment) View containerMoviesSearchFragment;
 
+    public AutoCompleteTextView getSearchView() {
+        return searchView;
+    }
+
     private SearchHistory searchHistory;
     private ArrayAdapter<String> searchHistoryAdapter;
     private boolean showSearchView;
@@ -191,7 +195,7 @@ public class MoviesSearchActivity extends BaseNavDrawerActivity implements
         search();
     }
 
-    private void search() {
+    public void search() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(
                 R.id.containerMoviesSearchFragment);
         if (fragment == null) {

@@ -20,6 +20,34 @@ public abstract class EpisodeBaseJob extends BaseEpisodesJob {
         this.episode = episode;
     }
 
+    public int getEpisodeTvdbId() {
+        return episodeTvdbId;
+    }
+
+    public void setEpisodeTvdbId(int episodeTvdbId) {
+        this.episodeTvdbId = episodeTvdbId;
+    }
+
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
+    }
+
+    public int getEpisode() {
+        return episode;
+    }
+
+    public void setEpisode(int episode) {
+        this.episode = episode;
+    }
+
+    public int getFlag() {
+        return super.getFlagValue();
+    }
+
     @Override
     public Uri getDatabaseUri() {
         return SeriesGuideContract.Episodes.buildEpisodeUri(String.valueOf(episodeTvdbId));
