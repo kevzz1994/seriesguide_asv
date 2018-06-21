@@ -1,9 +1,11 @@
 package com.battlelancer.seriesguide.ui;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.battlelancer.seriesguide.dataliberation.model.Episode;
 import com.battlelancer.seriesguide.jobs.episodes.EpisodeWatchedJob;
+import com.battlelancer.seriesguide.provider.SeriesGuideContract;
 import com.battlelancer.seriesguide.ui.episodes.EpisodeFlags;
 import com.battlelancer.seriesguide.ui.episodes.EpisodeTools;
 
@@ -18,6 +20,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.MockitoRule;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class EpisodeTest {
 
@@ -26,6 +31,9 @@ public class EpisodeTest {
 
     @Mock
     private EpisodeWatchedJob episodeWatchedJob;
+
+    @Mock
+    private Context context;
 
     @Before
     public void setup() {
