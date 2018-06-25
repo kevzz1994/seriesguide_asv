@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoRule;
 
 /**
  * StatsFragmentTest
- * Sergio & Kevin
+ * Sergio & kevin
  */
 @RunWith(MockitoJUnitRunner.class)
 public class StatsFragmentTest {
@@ -25,10 +25,10 @@ public class StatsFragmentTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private Bundle savedInstanceState;
+    Bundle savedInstanceState;
 
     @Mock
-    private StatsFragment statsFragment;
+    StatsFragment statsFragment;
 
     @Test
     public void positiveEpisodesAndMoviesTest() {

@@ -4,7 +4,6 @@ android:
   components:
     - android-22
     - sys-img-armeabi-v7a-android-22
-#    - sys-img-armeabi-v7a-android-17
 
 before_install:
   - yes | sdkmanager "platforms;android-27"
@@ -19,3 +18,4 @@ before_script:
 script:
   - ./gradlew androidDependencies
   - ./gradlew connectedAndroidTest
+  - ./gradlew test
