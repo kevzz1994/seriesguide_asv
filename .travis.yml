@@ -18,6 +18,4 @@ before_script:
 script:
   - ./gradlew androidDependencies
   - ./gradlew connectedAndroidTest
-
-
-
+  - ./gradlew test
